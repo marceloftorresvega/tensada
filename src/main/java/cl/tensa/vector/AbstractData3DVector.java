@@ -4,7 +4,7 @@ import java.util.Objects;
 
 /**
  *
- * @author KDU
+ * @author mtorres
  */
 public abstract class AbstractData3DVector extends AbstractBaseDouble3DVector {
     

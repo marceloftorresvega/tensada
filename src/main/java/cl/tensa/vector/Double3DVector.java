@@ -4,7 +4,7 @@ import cl.tensa.matrix.DoubleMatriz;
 
 /**
  *
- * @author KDU
+ * @author mtorres
  */
 public interface Double3DVector extends Cloneable {
 

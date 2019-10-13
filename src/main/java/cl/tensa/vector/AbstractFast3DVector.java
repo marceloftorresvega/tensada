@@ -2,7 +2,7 @@ package cl.tensa.vector;
 
 /**
  *
- * @author KDU
+ * @author mtorres
  */
 public abstract class AbstractFast3DVector extends AbstractBaseDouble3DVector {
     

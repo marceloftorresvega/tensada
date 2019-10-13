@@ -5,7 +5,7 @@ import java.util.Arrays;
 
 /**
  *
- * @author KDU
+ * @author mtorres
  */
 public abstract class AbstractBaseDouble3DVector implements Double3DVector {
     

@@ -2,7 +2,7 @@ package cl.tensa.vector;
 
 /**
  *
- * @author KDU
+ * @author mtorres
  */
 public class Data3D {
     
