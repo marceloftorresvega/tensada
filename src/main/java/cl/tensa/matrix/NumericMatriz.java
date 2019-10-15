@@ -136,11 +136,12 @@ public abstract class NumericMatriz<N extends Number> extends Matriz<N> {
     }
     public NumericMatriz<N> productoKronecker(NumericMatriz<N> prod){
         
-        int p = this.dominio.getFila() * prod.dominio.getFila();
-        int q = this.dominio.getColumna() * prod.dominio.getColumna();
+        int pdfila = prod.dominio.getFila();
+        int pdcolumna = prod.dominio.getColumna();
+        int p = this.dominio.getFila() * pdfila;
+        int q = this.dominio.getColumna() * pdcolumna;
 
         Dominio resultante = new Dominio(p, q);
-        
         
         return instancia(
                 resultante, 
@@ -150,13 +151,17 @@ public abstract class NumericMatriz<N extends Number> extends Matriz<N> {
                 .flatMap( e -> e.getValue().entrySet().stream()
                         .collect( Collectors.toMap(m -> 
                         {
-                            ParOrdenado key = m.getKey();
-                            Integer kf = key.getFila();
-                            Integer kc = key.getColumna();
-                            Dominio pd = prod.getDominio();
+                            ParOrdenado globalKey = e.getKey();
+                            int gkf = globalKey.getFila();
+                            int gkc = globalKey.getColumna();                            
+                            
+                            ParOrdenado localKey = m.getKey();
+                            int lkf = localKey.getFila();
+                            int lkc = localKey.getColumna();
+                            
                             return new Indice(
-                                        kf  + (kf   -1) * pd.getFila(), 
-                                        kc  + (kc   -1) * pd.getColumna()) ;
+                                        lkf  + (gkf   -1) * pdfila, 
+                                        lkc  + (gkc   -1) * pdcolumna) ;
                         }
                             , m -> m.getValue())).entrySet().stream()
                 )
