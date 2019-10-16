@@ -135,38 +135,31 @@ public abstract class NumericMatriz<N extends Number> extends Matriz<N> {
 
     }
     public NumericMatriz<N> productoKronecker(NumericMatriz<N> prod){
-        
         int pdfila = prod.dominio.getFila();
         int pdcolumna = prod.dominio.getColumna();
         int p = this.dominio.getFila() * pdfila;
         int q = this.dominio.getColumna() * pdcolumna;
+        Dominio nuevoDominio = new Dominio(p, q);
+        
+        return this.entrySet().stream()
+                .map(global -> prod.productoEscalar(global.getValue()).entrySet().stream()
+                        .collect(Collectors.toMap(local -> {
+                                ParOrdenado gKey = global.getKey();
+                                ParOrdenado lKey = local.getKey();
 
-        Dominio resultante = new Dominio(p, q);
-        
-        return instancia(
-                resultante, 
-                this.entrySet().stream()
-                .collect(Collectors.toMap(e -> e.getKey(), e -> prod.productoEscalar(e.getValue())) )
-                .entrySet().stream()
-                .flatMap( e -> e.getValue().entrySet().stream()
-                        .collect( Collectors.toMap(m -> 
-                        {
-                            ParOrdenado globalKey = e.getKey();
-                            int gkf = globalKey.getFila();
-                            int gkc = globalKey.getColumna();                            
-                            
-                            ParOrdenado localKey = m.getKey();
-                            int lkf = localKey.getFila();
-                            int lkc = localKey.getColumna();
-                            
-                            return new Indice(
-                                        lkf  + (gkf   -1) * pdfila, 
-                                        lkc  + (gkc   -1) * pdcolumna) ;
-                        }
-                            , m -> m.getValue())).entrySet().stream()
+                                return new Indice(
+                                        lKey.getFila()    + (gKey.getFila()    - 1) * pdfila,
+                                        lKey.getColumna() + (gKey.getColumna() - 1) * pdcolumna);
+                        }, local -> local.getValue()))
+                        
                 )
-                .collect(Collectors.toMap( n -> n.getKey(), n -> n.getValue())));
-        
+                .reduce(instancia(nuevoDominio), (r,m) -> {
+                    r.putAll(m);
+                    return r;
+                }, (a,b) -> {
+                    a.putAll(b);
+                    return a;
+                });
     }
 
     public NumericMatriz<N> transpuesta() {
@@ -252,8 +245,8 @@ public abstract class NumericMatriz<N extends Number> extends Matriz<N> {
                         dominio.getFila() - 1,
                         dominio.getColumna() - 1),
                 this.entrySet().stream()
-                .filter(e -> e.getKey().getColumna().equals(i.getColumna()))
-                .filter(e -> e.getKey().getFila().equals(i.getFila()))
+                .filter(e -> !e.getKey().getColumna().equals(i.getColumna()))
+                .filter(e -> !e.getKey().getFila().equals(i.getFila()))
                 .collect(Collectors.toMap((Entry<ParOrdenado, N> e) -> {
                     ParOrdenado idx = e.getKey();
                     return new Indice(
