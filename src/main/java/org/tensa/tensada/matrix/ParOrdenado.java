@@ -1,4 +1,4 @@
-package cl.tensa.matrix;
+package org.tensa.tensada.matrix;
 
 /**
  *

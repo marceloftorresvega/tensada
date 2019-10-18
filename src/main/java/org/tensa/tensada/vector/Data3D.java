@@ -1,4 +1,4 @@
-package cl.tensa.vector;
+package org.tensa.tensada.vector;
 
 /**
  *

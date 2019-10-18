@@ -1,7 +1,7 @@
-package cl.tensa.vector.impl;
+package org.tensa.tensada.vector.impl;
 
-import cl.tensa.vector.AbstractFast3DVector;
-import cl.tensa.vector.Double3DVector;
+import org.tensa.tensada.vector.AbstractFast3DVector;
+import org.tensa.tensada.vector.Double3DVector;
 
 /**
  *

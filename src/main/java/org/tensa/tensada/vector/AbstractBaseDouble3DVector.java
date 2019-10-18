@@ -1,6 +1,6 @@
-package cl.tensa.vector;
+package org.tensa.tensada.vector;
 
-import cl.tensa.matrix.DoubleMatriz;
+import org.tensa.tensada.matrix.DoubleMatriz;
 import java.util.Arrays;
 
 /**
