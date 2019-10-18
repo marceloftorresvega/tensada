@@ -1,7 +1,7 @@
-package cl.tensa.matrix;
+package org.tensa.tensada.matrix;
 
-import cl.tensa.vector.Double3DVector;
-import cl.tensa.vector.impl.DoubleVector3DImpl;
+import org.tensa.tensada.vector.Double3DVector;
+import org.tensa.tensada.vector.impl.DoubleVector3DImpl;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;

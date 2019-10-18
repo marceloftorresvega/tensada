@@ -1,8 +1,8 @@
-package cl.tensa.vector;
+package org.tensa.tensada.vector;
 
-import cl.tensa.matrix.Dominio;
-import cl.tensa.matrix.DoubleMatriz;
-import cl.tensa.matrix.Indice;
+import org.tensa.tensada.matrix.Dominio;
+import org.tensa.tensada.matrix.DoubleMatriz;
+import org.tensa.tensada.matrix.Indice;
 import java.util.Objects;
 
 
