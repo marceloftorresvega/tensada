@@ -185,12 +185,6 @@ public abstract class NumericMatriz<N extends Number> extends Matriz<N> {
 
     public NumericMatriz<N> productoTensorial(NumericMatriz<N> parte) {
 
-        if (this.dominio.getColumna() != 1) {
-            throw new IllegalArgumentException("matrices no compatibles");
-        }
-        if (parte.dominio.getColumna() != 1) {
-            throw new IllegalArgumentException("matrices no compatibles");
-        }
         return producto(parte.transpuesta());
 
     }
@@ -203,6 +197,9 @@ public abstract class NumericMatriz<N extends Number> extends Matriz<N> {
     public NumericMatriz<N> skewSymMatrix() {
 
         if (this.dominio.getFila() < 3) {
+            throw new IllegalArgumentException("matrices no compatibles");
+        }
+        if (this.dominio.getColumna() != 1) {
             throw new IllegalArgumentException("matrices no compatibles");
         }
 
