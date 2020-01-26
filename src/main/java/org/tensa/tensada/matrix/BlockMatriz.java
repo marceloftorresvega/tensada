@@ -40,6 +40,10 @@ public class BlockMatriz<U> extends Matriz<Matriz<U>> {
     }
     
     public Matriz<U> build(){
+        return merge();
+    }
+    
+    public Matriz<U> merge(){
         this.replaceAll((i,matriz) ->  {
             int maxFila = this.dominio.stream().filter( par -> par.getFila().equals(i.getFila()))
                     .map(par -> this.getOrDefault(par, new Matriz<>(new Dominio(0, 0))))
@@ -53,7 +57,7 @@ public class BlockMatriz<U> extends Matriz<Matriz<U>> {
                     .mapToInt(dom -> dom.getColumna())
                     .max().orElse(0);
             
-            matriz.dominio= new Dominio(maxFila, maxColumna);
+            matriz.dominio = new Dominio(maxFila, maxColumna);
             return matriz;
         });
         
@@ -93,5 +97,69 @@ public class BlockMatriz<U> extends Matriz<Matriz<U>> {
                         matriz1.putAll(matriz2);
                         return matriz1;
                     });
+    }
+    
+    public void splitIn(Matriz<U> older) {
+        
+        this.replaceAll((i,matriz) ->  {
+            int maxFila = this.dominio.stream().filter( par -> par.getFila().equals(i.getFila()))
+                    .map(par -> this.getOrDefault(par, new Matriz<>(new Dominio(0, 0))))
+                    .map(mat -> mat.getDominio())
+                    .mapToInt(dom -> dom.getFila())
+                    .max().orElse(0);
+            
+            int maxColumna = this.dominio.stream().filter( par -> par.getColumna().equals(i.getColumna()))
+                    .map(par -> this.getOrDefault(par, new Matriz<>(new Dominio(0, 0))))
+                    .map(mat -> mat.getDominio())
+                    .mapToInt(dom -> dom.getColumna())
+                    .max().orElse(0);
+            
+            matriz.dominio = new Dominio(maxFila, maxColumna);
+            return matriz;
+        });
+        
+        int dominioMaxFila = this.values().stream().map(Matriz<U>::getDominio)
+                .mapToInt(Dominio::getFila)
+                .sum();
+        
+        int dominioMaxColumna = this.values().stream().map(Matriz<U>::getDominio)
+                .mapToInt(Dominio::getColumna)
+                .sum();
+        
+        Dominio superDominio = new Dominio(dominioMaxFila, dominioMaxColumna);
+        if (superDominio.equals(older.getDominio())) {
+            
+            this.getDominio().stream()
+                    
+                    .forEach( (ParOrdenado key) -> {
+                    
+                            Matriz<U> childMatriz = get(key);
+
+                            int lastLeft = this.entrySet().stream()
+                                    .filter( e -> e.getKey().getFila() == key.getFila())
+                                    .filter( e -> e.getKey().getColumna() < key.getColumna())
+                                    .mapToInt( e -> e.getValue().getDominio().getColumna())
+                                    .sum();
+
+                            int lastTop = this.entrySet().stream()
+                                    .filter( e -> e.getKey().getColumna() == key.getColumna())
+                                    .filter( e -> e.getKey().getFila() < key.getFila())
+                                    .mapToInt( e -> e.getValue().getDominio().getFila())
+                                    .sum();
+
+
+                            childMatriz.getDominio().stream()
+                                    .forEach( (ParOrdenado i)-> {
+                                U val = older.get( new Indice(lastTop>0? lastTop-1:0 + i.getFila(),
+                                        lastLeft>0? lastLeft-1:0 + i.getColumna()));
+                                childMatriz.put(i, val);
+                            }); 
+                            
+                    
+                    });
+            
+        } else {
+            throw new IllegalArgumentException("Matrices no compatibles");
+        }
     }
 }
