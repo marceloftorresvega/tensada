@@ -1,7 +1,10 @@
 package org.tensa.tensada.vector;
 
-import org.tensa.tensada.matrix.DoubleMatriz;
+import org.tensa.tensada.matrixv2.DoubleMatriz;
 import java.util.Arrays;
+import org.tensa.tensada.matrix.Dominio;
+import org.tensa.tensada.matrixv2.Matriz;
+import org.tensa.tensada.matrixv2.MatrizImpl;
 
 /**
  *
@@ -89,7 +92,9 @@ public abstract class AbstractBaseDouble3DVector implements Double3DVector {
 
     @Override
     public DoubleMatriz toMatriz() {
-        return DoubleMatriz.fromVector(this);
+        Matriz<Double> m = new MatrizImpl<>(new Dominio(3, 1));
+        DoubleMatriz m2 = (DoubleMatriz)m;
+        return m2.fromVector(this);
     }
     
     @Override

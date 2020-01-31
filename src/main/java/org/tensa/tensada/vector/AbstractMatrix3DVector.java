@@ -1,9 +1,9 @@
 package org.tensa.tensada.vector;
 
 import org.tensa.tensada.matrix.Dominio;
-import org.tensa.tensada.matrix.DoubleMatriz;
 import org.tensa.tensada.matrix.Indice;
 import java.util.Objects;
+import org.tensa.tensada.matrixv2.*;
 
 
 public abstract class AbstractMatrix3DVector extends AbstractBaseDouble3DVector {
@@ -15,16 +15,19 @@ public abstract class AbstractMatrix3DVector extends AbstractBaseDouble3DVector 
     }
 
     public AbstractMatrix3DVector() {
-        this.data = new DoubleMatriz(new Dominio(3, 1));
+        Matriz<Double> tmp = (Matriz) new MatrizImpl<>(new Dominio(3, 1));
+        this.data = (DoubleMatriz)tmp;
     }
 
     public AbstractMatrix3DVector(double x, double y, double z) {
-        this.data = new DoubleMatriz(new Dominio(3, 1));
+        Matriz<Double> tmp = (Matriz) new MatrizImpl<>(new Dominio(3, 1));
+        this.data = (DoubleMatriz)tmp;
         this.location(x, y, z);
     }
 
-    public AbstractMatrix3DVector(Double3DVector src) {        
-        this.data = new DoubleMatriz(new Dominio(3, 1));
+    public AbstractMatrix3DVector(Double3DVector src) {
+        Matriz<Double> tmp = (Matriz) new MatrizImpl<>(new Dominio(3, 1));
+        this.data = (DoubleMatriz)tmp;;
         this.set(src);
     }
 

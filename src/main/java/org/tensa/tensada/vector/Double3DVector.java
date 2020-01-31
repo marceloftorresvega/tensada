@@ -1,6 +1,6 @@
 package org.tensa.tensada.vector;
 
-import org.tensa.tensada.matrix.DoubleMatriz;
+import org.tensa.tensada.matrixv2.DoubleMatriz;
 
 /**
  *
