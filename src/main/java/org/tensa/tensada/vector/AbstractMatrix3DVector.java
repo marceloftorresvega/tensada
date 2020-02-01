@@ -15,18 +15,18 @@ public abstract class AbstractMatrix3DVector extends AbstractBaseDouble3DVector 
     }
 
     public AbstractMatrix3DVector() {
-        Matriz<Double> tmp = (Matriz) new MatrizImpl<>(new Dominio(3, 1));
+        Matriz<Double> tmp = (Matriz) new HashMatriz<>(new Dominio(3, 1));
         this.data = (DoubleMatriz)tmp;
     }
 
     public AbstractMatrix3DVector(double x, double y, double z) {
-        Matriz<Double> tmp = (Matriz) new MatrizImpl<>(new Dominio(3, 1));
+        Matriz<Double> tmp = (Matriz) new HashMatriz<>(new Dominio(3, 1));
         this.data = (DoubleMatriz)tmp;
         this.location(x, y, z);
     }
 
     public AbstractMatrix3DVector(Double3DVector src) {
-        Matriz<Double> tmp = (Matriz) new MatrizImpl<>(new Dominio(3, 1));
+        Matriz<Double> tmp = (Matriz) new HashMatriz<>(new Dominio(3, 1));
         this.data = (DoubleMatriz)tmp;;
         this.set(src);
     }

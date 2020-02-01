@@ -30,7 +30,7 @@ import org.tensa.tensada.matrix.Indice;
 import org.tensa.tensada.matrix.ParOrdenado;
 
 
-public class MatrizImpl<V> extends HashMap<ParOrdenado, V> implements Matriz<V> {
+public class HashMatriz<V> extends HashMap<ParOrdenado, V> implements Matriz<V> {
 
     private final Dominio domain;
     
@@ -39,16 +39,16 @@ public class MatrizImpl<V> extends HashMap<ParOrdenado, V> implements Matriz<V> 
         return domain;
     }
 
-    public MatrizImpl(Dominio domain, Map<? extends ParOrdenado, ? extends V> m) {
+    public HashMatriz(Dominio domain, Map<? extends ParOrdenado, ? extends V> m) {
         super(m);
         this.domain = domain;
     }
 
-    public MatrizImpl(Dominio domain) {
+    public HashMatriz(Dominio domain) {
         this.domain = domain;
     }
 
-    public MatrizImpl(Matriz<V> m) {
+    public HashMatriz(Matriz<V> m) {
         super(m);
         this.domain = m.getDominio();
     }
@@ -81,17 +81,17 @@ public class MatrizImpl<V> extends HashMap<ParOrdenado, V> implements Matriz<V> 
 
     @Override
     public Matriz<V> instancia(Dominio dominio) {
-        return new MatrizImpl<>(dominio);
+        return new HashMatriz<>(dominio);
     }
 
     @Override
     public Matriz<V> instancia(Dominio dominio, Map<? extends ParOrdenado, ? extends V> m) {
-        return new MatrizImpl<>(domain, m);
+        return new HashMatriz<>(domain, m);
     }
 
     @Override
     public Matriz<V> instancia(Matriz<V> m) {
-        return new MatrizImpl<>(m);
+        return new HashMatriz<>(m);
     }
 
     
