@@ -61,11 +61,17 @@ public class BlockMatriz<U> extends Matriz<Matriz<U>> {
             return matriz;
         });
         
-        int dominioMaxFila = this.values().stream().map(Matriz<U>::getDominio)
+        int dominioMaxFila = this.entrySet().stream()
+                .filter(e -> e.getKey().getColumna() == 1)
+                .map(Entry<ParOrdenado, Matriz<U>>::getValue)
+                .map(Matriz<U>::getDominio)
                 .mapToInt(Dominio::getFila)
                 .sum();
         
-        int dominioMaxColumna = this.values().stream().map(Matriz<U>::getDominio)
+        int dominioMaxColumna = this.entrySet().stream()
+                .filter(e -> e.getKey().getFila() == 1)
+                .map(Entry<ParOrdenado, Matriz<U>>::getValue)
+                .map(Matriz<U>::getDominio)
                 .mapToInt(Dominio::getColumna)
                 .sum();
         
@@ -118,11 +124,17 @@ public class BlockMatriz<U> extends Matriz<Matriz<U>> {
             return matriz;
         });
         
-        int dominioMaxFila = this.values().stream().map(Matriz<U>::getDominio)
+        int dominioMaxFila = this.entrySet().stream()
+                .filter(e -> e.getKey().getColumna() == 1)
+                .map(Entry<ParOrdenado, Matriz<U>>::getValue)
+                .map(Matriz<U>::getDominio)
                 .mapToInt(Dominio::getFila)
                 .sum();
         
-        int dominioMaxColumna = this.values().stream().map(Matriz<U>::getDominio)
+        int dominioMaxColumna = this.entrySet().stream()
+                .filter(e -> e.getKey().getFila() == 1)
+                .map(Entry<ParOrdenado, Matriz<U>>::getValue)
+                .map(Matriz<U>::getDominio)
                 .mapToInt(Dominio::getColumna)
                 .sum();
         
