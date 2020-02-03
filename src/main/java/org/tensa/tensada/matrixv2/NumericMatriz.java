@@ -13,7 +13,11 @@ import org.tensa.tensada.matrix.ParOrdenado;
  * @author mtorres
  * @param <N>
  */
-public abstract class NumericMatriz<N extends Number> implements Matriz<N> {
+public abstract class NumericMatriz<N extends Number> extends InjectedMatriz<N> implements Matriz<N> {
+
+    public NumericMatriz(Matriz<N> origen) {
+        super(origen);
+    }
 
 //    public NumericMatriz(Dominio dominio) {
 //        super(dominio);
@@ -65,7 +69,7 @@ public abstract class NumericMatriz<N extends Number> implements Matriz<N> {
         if (value.equals(this.getCeroValue())) {
             return remove(key);
         } else {
-            return put(key, value);
+            return super.put(key, value);
 
         }
     }
@@ -172,7 +176,7 @@ public abstract class NumericMatriz<N extends Number> implements Matriz<N> {
 
     public NumericMatriz<N> productoPunto(NumericMatriz<N> prod) {
 
-        NumericMatriz<N> transpuesta = (NumericMatriz<N>)this.transpuesta();
+        NumericMatriz<N> transpuesta = instancia(this.transpuesta());
         return transpuesta.producto(prod);
 
     }
@@ -183,7 +187,7 @@ public abstract class NumericMatriz<N extends Number> implements Matriz<N> {
 
     public NumericMatriz<N> productoTensorial(NumericMatriz<N> parte) {
 
-        NumericMatriz<N> transpuesta = (NumericMatriz<N>)parte.transpuesta();
+        NumericMatriz<N> transpuesta = instancia(parte.transpuesta());
         return producto(transpuesta);
 
     }

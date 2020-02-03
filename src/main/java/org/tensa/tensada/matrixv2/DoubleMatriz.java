@@ -1,18 +1,25 @@
 package org.tensa.tensada.matrixv2;
 
+import java.util.Map;
 import org.tensa.tensada.vector.Double3DVector;
 import org.tensa.tensada.vector.impl.DoubleVector3DImpl;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import org.tensa.tensada.matrix.Dominio;
 import org.tensa.tensada.matrix.Indice;
+import org.tensa.tensada.matrix.ParOrdenado;
 
 /**
  *
  * @author mtorres
  */
-public abstract class DoubleMatriz extends NumericMatriz<Double> {
+public class DoubleMatriz extends NumericMatriz<Double> {
 
+    public DoubleMatriz(Matriz<Double> origen) {
+        super(origen);
+    }
+
+    
     public DoubleMatriz fromVector(Double3DVector vector) {
 
         Dominio dominio = new Dominio(3, 1);
@@ -164,6 +171,21 @@ public abstract class DoubleMatriz extends NumericMatriz<Double> {
     @Override
     public Double sin(Double sum1) {
         return Math.sin(sum1);
+    }
+
+    @Override
+    public NumericMatriz<Double> instancia(Dominio dominio) {
+        return new DoubleMatriz(this.getOrigen().instancia(dominio));
+    }
+
+    @Override
+    public NumericMatriz<Double> instancia(Dominio dominio, Map<? extends ParOrdenado, ? extends Double> m) {
+        return new DoubleMatriz(this.getOrigen().instancia(dominio, m));
+    }
+
+    @Override
+    public NumericMatriz<Double> instancia(Matriz<Double> m) {
+        return new DoubleMatriz(this.getOrigen().instancia(m));
     }
 
 }

@@ -26,6 +26,9 @@ package org.tensa.tensada.matrixv2;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.tensa.tensada.matrix.Dominio;
@@ -192,7 +195,7 @@ public class MatrizUtils {
 
         @Override
         public Dominio getDominio() {
-            return (Dominio)origen.getDominio().transpuesta();
+            return new Dominio(origen.getDominio().transpuesta());
         }
 
         @Override
@@ -284,6 +287,67 @@ public class MatrizUtils {
         @Override
         public void clear() {
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public V getOrDefault(Object o, V v) {
+            if (!(o instanceof ParOrdenado)) {
+                return null;
+            }
+            
+            ParOrdenado parKey = (ParOrdenado)o;
+            return origen.getOrDefault(parKey.transpuesta(), v);
+        }
+
+        @Override
+        public void forEach(BiConsumer<? super ParOrdenado, ? super V> bc) {
+            BiConsumer<? super ParOrdenado, ? super V> bct = (p,v) -> bc.accept(p.transpuesta(), v);
+            origen.forEach(bct);
+        }
+
+        @Override
+        public void replaceAll(BiFunction<? super ParOrdenado, ? super V, ? extends V> bf) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public V putIfAbsent(ParOrdenado k, V v) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public boolean remove(Object o, Object o1) {
+           throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public boolean replace(ParOrdenado k, V v, V v1) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public V replace(ParOrdenado k, V v) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public V computeIfAbsent(ParOrdenado k, Function<? super ParOrdenado, ? extends V> fnctn) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public V computeIfPresent(ParOrdenado k, BiFunction<? super ParOrdenado, ? super V, ? extends V> bf) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public V compute(ParOrdenado k, BiFunction<? super ParOrdenado, ? super V, ? extends V> bf) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public V merge(ParOrdenado k, V v, BiFunction<? super V, ? super V, ? extends V> bf) {
+            throw new UnsupportedOperationException("Not supported yet.");
         }
         
         @Override

@@ -26,7 +26,6 @@ package org.tensa.tensada.matrixv2;
 import java.util.Map;
 import java.util.Optional;
 import static java.util.stream.Collectors.*;
-import java.util.stream.IntStream;
 import org.tensa.tensada.matrix.Dominio;
 import org.tensa.tensada.matrix.Indice;
 import org.tensa.tensada.matrix.ParOrdenado;
