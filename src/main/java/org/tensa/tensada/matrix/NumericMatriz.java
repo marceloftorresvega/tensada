@@ -376,13 +376,17 @@ public abstract class NumericMatriz<N extends Number> extends Matriz<N> {
             throw new IllegalArgumentException("matrices no compatibles");
         }
 
+        N coT = cos(angulo);
+        N siT = sin(angulo);
+
         try (
             NumericMatriz<N> ux = eje.skewSymMatrix();
             NumericMatriz<N> uut = eje.productoTensorial(eje);
-            NumericMatriz<N> id = ux.matrizIdentidad()) {
-
-            N coT = cos(angulo);
-            N siT = sin(angulo);
+            NumericMatriz<N> id = ux.matrizIdentidad();
+            NumericMatriz<N> idCot = id.productoEscalar(coT);
+            NumericMatriz<N> uxSit = ux.productoEscalar(siT);
+            NumericMatriz<N> uut1noCot = uut.productoEscalar(restaDirecta(getUnoValue(), coT));
+            NumericMatriz<N> adIdCotUxSit =idCot.adicion(uxSit);) {
 
 //    //        return ux.productoEscalar(siT)
 //    //                .adicion(id.substraccion(uut).productoEscalar(coT))
@@ -390,13 +394,8 @@ public abstract class NumericMatriz<N extends Number> extends Matriz<N> {
 //            return id.productoEscalar(coT)
 //                    .adicion(ux.productoEscalar(siT))
 //                    .adicion(uut.productoEscalar(restaDirecta(getUnoValue(), coT)));
-            try (
-                    NumericMatriz<N> idCot = id.productoEscalar(coT);
-                    NumericMatriz<N> uxSit = ux.productoEscalar(siT);
-                    NumericMatriz<N> uut1noCot = uut.productoEscalar(restaDirecta(getUnoValue(), coT));
-                    NumericMatriz<N> adIdCotUxSit =idCot.adicion(uxSit);){
                 return adIdCotUxSit.adicion(uut1noCot);
-            }
+                
         } catch (IOException ex) {
            throw new RejectedExecutionException("matrizRotacion", ex);
         }
