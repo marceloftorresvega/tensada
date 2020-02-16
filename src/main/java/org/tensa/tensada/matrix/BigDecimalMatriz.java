@@ -86,5 +86,10 @@ public class BigDecimalMatriz extends NumericMatriz<BigDecimal> {
     public NumericMatriz<BigDecimal> instancia(Dominio dominio, Map<? extends ParOrdenado, ? extends BigDecimal> m) {
         return new BigDecimalMatriz(dominio, m);
     }
+
+    @Override
+    public BigDecimal restaDirecta(BigDecimal sum1, BigDecimal sum2) {
+        return sum1.subtract(sum2);
+    }
     
 }

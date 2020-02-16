@@ -198,4 +198,9 @@ public class FloatMatriz extends NumericMatriz<Float> {
         return (FloatMatriz) super.producto(parte);
     }
 
+    @Override
+    public Float restaDirecta(Float sum1, Float sum2) {
+        return sum1 - sum2;
+    }
+
 }
