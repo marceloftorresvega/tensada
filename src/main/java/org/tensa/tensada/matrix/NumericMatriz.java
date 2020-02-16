@@ -1,8 +1,12 @@
 package org.tensa.tensada.matrix;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.function.Function;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -175,11 +179,11 @@ public abstract class NumericMatriz<N extends Number> extends Matriz<N> {
 
     public NumericMatriz<N> productoPunto(NumericMatriz<N> prod) {
 
-        NumericMatriz<N> retorno;
-        NumericMatriz<N> transpuesta;
-        retorno = (transpuesta = this.transpuesta()).producto(prod);
-        transpuesta.clear();
-        return retorno;
+        try(NumericMatriz<N> transpuesta = this.transpuesta()) {
+            return transpuesta.producto(prod);
+        } catch (IOException ex) {
+            throw new RejectedExecutionException("productoPunto", ex);
+        }
 
     }
 
@@ -188,12 +192,11 @@ public abstract class NumericMatriz<N extends Number> extends Matriz<N> {
     }
 
     public NumericMatriz<N> productoTensorial(NumericMatriz<N> parte) {
-        NumericMatriz<N> producto;
-        NumericMatriz<N> transpuesta;
-
-        producto = producto( transpuesta = parte.transpuesta());
-        transpuesta.clear();
-        return producto;
+        try (NumericMatriz<N> transpuesta = parte.transpuesta()) {
+            return producto(transpuesta );
+        } catch (IOException ex) {
+            throw new RejectedExecutionException("productoTensorial", ex);
+        }
 
     }
 
@@ -290,15 +293,20 @@ public abstract class NumericMatriz<N extends Number> extends Matriz<N> {
     }
     
     public NumericMatriz<N> cofactores(){
-        NumericMatriz<N> transpuesta = this.transpuesta();
-        NumericMatriz<N> transpuestaAdjunta = transpuesta.adjunta();
-        transpuesta.clear();
-        return transpuestaAdjunta;
+        try (NumericMatriz<N> transpuesta = this.transpuesta()) {
+            return transpuesta.adjunta();
+        } catch (IOException ex) {
+            throw new RejectedExecutionException("cofactores", ex);
+        }
     }
     
     public NumericMatriz<N> inversa(){
         N det = this.determinante().get(Indice.D1);
-        return this.cofactores().productoEscalar( inversoMultiplicativo(det));
+        try (NumericMatriz<N> cofactores = this.cofactores()) {
+            return cofactores.productoEscalar( inversoMultiplicativo(det));
+        } catch (IOException ex) {
+            throw new RejectedExecutionException("inversa", ex);
+        }
     }
 
     public NumericMatriz<N> matrizUno(Dominio dominio1) {
@@ -366,19 +374,24 @@ public abstract class NumericMatriz<N extends Number> extends Matriz<N> {
             throw new IllegalArgumentException("matrices no compatibles");
         }
 
-        NumericMatriz<N> ux = eje.skewSymMatrix();
-        NumericMatriz<N> uut = eje.productoTensorial(eje);
-        NumericMatriz<N> id = ux.matrizIdentidad();
+        try (
+            NumericMatriz<N> ux = eje.skewSymMatrix();
+            NumericMatriz<N> uut = eje.productoTensorial(eje);
+            NumericMatriz<N> id = ux.matrizIdentidad()) {
 
-        N coT = cos(angulo);
-        N siT = sin(angulo);
+            N coT = cos(angulo);
+            N siT = sin(angulo);
 
-//        return ux.productoEscalar(siT)
-//                .adicion(id.substraccion(uut).productoEscalar(coT))
-//                .adicion(uut);
-        return id.productoEscalar(coT)
-                .adicion(ux.productoEscalar(siT))
-                .adicion(uut.productoEscalar(sumaDirecta(getUnoValue(), inversoAditivo(coT))));
+    //        return ux.productoEscalar(siT)
+    //                .adicion(id.substraccion(uut).productoEscalar(coT))
+    //                .adicion(uut);
+            return id.productoEscalar(coT)
+                    .adicion(ux.productoEscalar(siT))
+                    .adicion(uut.productoEscalar(sumaDirecta(getUnoValue(), inversoAditivo(coT))));
+        } catch (IOException ex) {
+           throw new RejectedExecutionException("matrizRotacion", ex);
+        }
+
 
     }
 
