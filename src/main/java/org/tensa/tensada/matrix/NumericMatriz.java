@@ -37,6 +37,8 @@ public abstract class NumericMatriz<N extends Number> extends Matriz<N> {
 
     public abstract N sumaDirecta(N sum1, N sum2);
 
+    public abstract N restaDirecta(N sum1, N sum2);
+
     public abstract N inversoAditivo(N sum1);
 
     public abstract N cos(Double sum1);
@@ -100,7 +102,7 @@ public abstract class NumericMatriz<N extends Number> extends Matriz<N> {
         return this.dominio.stream()
                 .collect(Collectors.toMap(
                         Function.identity(),
-                        index -> sumaDirecta(this.get(index), inversoAditivo(sumando.get(index))),
+                        index -> restaDirecta(this.get(index), sumando.get(index)),
                         (v1,v2) -> v1,
                         () -> instancia(this.dominio)));
     }
@@ -387,7 +389,7 @@ public abstract class NumericMatriz<N extends Number> extends Matriz<N> {
     //                .adicion(uut);
             return id.productoEscalar(coT)
                     .adicion(ux.productoEscalar(siT))
-                    .adicion(uut.productoEscalar(sumaDirecta(getUnoValue(), inversoAditivo(coT))));
+                    .adicion(uut.productoEscalar(restaDirecta(getUnoValue(), coT)));
         } catch (IOException ex) {
            throw new RejectedExecutionException("matrizRotacion", ex);
         }

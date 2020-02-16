@@ -198,4 +198,9 @@ public class DoubleMatriz extends NumericMatriz<Double> {
         return (DoubleMatriz) super.producto(parte);
     }
 
+    @Override
+    public Double restaDirecta(Double sum1, Double sum2) {
+        return sum1 - sum2;
+    }
+
 }
