@@ -2,6 +2,7 @@ package org.tensa.tensada.matrix;
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -63,12 +64,13 @@ public abstract class NumericMatriz<N extends Number> extends Matriz<N> {
     }
 
     public NumericMatriz<N> productoEscalar(N escala) {
-
-        return instancia(this.dominio, this.entrySet().stream()
-                .collect(Collectors.toMap(
-                                e -> e.getKey(),
-                                e -> productoDirecto(e.getValue(), escala)
-                        )));
+        return this.entrySet().stream()
+            .collect(Collectors.toMap(
+                            e -> e.getKey(),
+                            e -> productoDirecto(e.getValue(), escala),
+                            (v1,v2) -> v1,
+                            () -> instancia(this.dominio)
+                    ));
 
     }
 
@@ -77,12 +79,12 @@ public abstract class NumericMatriz<N extends Number> extends Matriz<N> {
             throw new IllegalArgumentException("matrices no compatibles");
         }
 
-        return instancia(
-                this.dominio,
-                this.dominio.stream()
+        return this.dominio.stream()
                 .collect(Collectors.toMap(
-                                index -> index,
-                                index -> sumaDirecta(this.get(index), sumando.get(index)))));
+                        Function.identity(),
+                        index -> sumaDirecta(this.get(index), sumando.get(index)),
+                        (v1,v2) -> v1,
+                        () -> instancia(this.dominio)));
 
     }
 
@@ -91,12 +93,12 @@ public abstract class NumericMatriz<N extends Number> extends Matriz<N> {
             throw new IllegalArgumentException("matrices no compatibles");
         }
 
-        return instancia(
-                this.dominio,
-                this.dominio.stream()
+        return this.dominio.stream()
                 .collect(Collectors.toMap(
-                                index -> index,
-                                index -> sumaDirecta(this.get(index), inversoAditivo(sumando.get(index))))));
+                        Function.identity(),
+                        index -> sumaDirecta(this.get(index), inversoAditivo(sumando.get(index))),
+                        (v1,v2) -> v1,
+                        () -> instancia(this.dominio)));
     }
 
     public NumericMatriz<N> producto(NumericMatriz<N> parte) {
@@ -110,28 +112,25 @@ public abstract class NumericMatriz<N extends Number> extends Matriz<N> {
         int p = parte.dominio.getColumna();
 
         Dominio resultante = new Dominio(n, p);
+        return resultante.stream()
+            .collect(Collectors.toMap(
+                        Function.identity(),
+                        index-> IntStream.rangeClosed(1, m)
+                            .mapToObj(k -> {
 
-        return instancia(
-                resultante,
-                resultante.stream()
-                .collect(Collectors.toMap(
-                                index -> index,
-                                index
-                                -> IntStream.rangeClosed(1, m)
-                                .mapToObj(k -> {
+                                Indice ik = new Indice(index.getFila(), k);
+                                Indice kj = new Indice(k, index.getColumna());
 
-                                    Indice ik = new Indice(index.getFila(), k);
-                                    Indice kj = new Indice(k, index.getColumna());
+                                return productoDirecto(
+                                        this.get(ik),
+                                        parte.get(kj));
 
-                                    return productoDirecto(
-                                            this.get(ik),
-                                            parte.get(kj));
-
-                                })
-                                .reduce(this.getCeroValue(),
-                                        (v1, v2) -> this.sumaDirecta(v1, v2))
-                        ))
-        );
+                            })
+                            .reduce(this.getCeroValue(),
+                                    (v1, v2) -> this.sumaDirecta(v1, v2)),
+                        (v1,v2) -> v1,
+                        () -> instancia(resultante)
+                    ));
 
     }
     public NumericMatriz<N> productoKronecker(NumericMatriz<N> prod){
@@ -166,16 +165,21 @@ public abstract class NumericMatriz<N extends Number> extends Matriz<N> {
 
         Dominio resultante = new Dominio(this.dominio.transpuesta());
 
-        return instancia(resultante, this.entrySet().stream()
-                .collect(Collectors.toMap(e
-                                -> new Indice(e.getKey().getColumna(), e.getKey().getFila()),
-                                e -> e.getValue())));
+        return this.entrySet().stream()
+                .collect(Collectors.toMap(e ->  e.getKey().transpuesta(),
+                                e -> e.getValue(),
+                                (v1 , v2) -> v1,
+                                () -> instancia(resultante)));
 
     }
 
     public NumericMatriz<N> productoPunto(NumericMatriz<N> prod) {
 
-        return this.transpuesta().producto(prod);
+        NumericMatriz<N> retorno;
+        NumericMatriz<N> transpuesta;
+        retorno = (transpuesta = this.transpuesta()).producto(prod);
+        transpuesta.clear();
+        return retorno;
 
     }
 
@@ -184,8 +188,12 @@ public abstract class NumericMatriz<N extends Number> extends Matriz<N> {
     }
 
     public NumericMatriz<N> productoTensorial(NumericMatriz<N> parte) {
+        NumericMatriz<N> producto;
+        NumericMatriz<N> transpuesta;
 
-        return producto(parte.transpuesta());
+        producto = producto( transpuesta = parte.transpuesta());
+        transpuesta.clear();
+        return producto;
 
     }
 
@@ -244,12 +252,18 @@ public abstract class NumericMatriz<N extends Number> extends Matriz<N> {
                 this.entrySet().stream()
                 .filter(e -> !e.getKey().getColumna().equals(i.getColumna()))
                 .filter(e -> !e.getKey().getFila().equals(i.getFila()))
-                .collect(Collectors.toMap((Entry<ParOrdenado, N> e) -> {
-                    ParOrdenado idx = e.getKey();
-                    return new Indice(
-                            idx.getColumna() < i.getColumna() ? idx.getColumna() : idx.getColumna() - 1,
-                            idx.getFila() < i.getFila() ? idx.getFila() : idx.getFila() - 1);
-                }, e -> e.getValue())));
+                .collect(Collectors.toMap(
+                        (Entry<ParOrdenado, N> e) -> {
+                            ParOrdenado idx = e.getKey();
+                            return new Indice(
+                                    idx.getColumna() < i.getColumna() ? idx.getColumna() : idx.getColumna() - 1,
+                                    idx.getFila() < i.getFila() ? idx.getFila() : idx.getFila() - 1);
+                        }, 
+                        Entry::getValue,
+                        (v1, v2) -> v1,
+                        () -> instancia(new Dominio(
+                                dominio.getFila() - 1,
+                                dominio.getColumna() - 1)))));
 
     }
 
@@ -265,16 +279,21 @@ public abstract class NumericMatriz<N extends Number> extends Matriz<N> {
                     .indexa(1, 2, inversoAditivo(this.get(Indice.E2)))
                     .indexa(2, 2, this.get(Indice.D1));
         }
-        return this.instancia(dominio, this.entrySet().stream()
+        return this.entrySet().stream()
                 .collect(Collectors.toMap(e -> e.getKey(), (Entry<ParOrdenado, N> e) -> {
-                    N valor = this.matrizIesima(e.getKey()).determinante().get(Indice.E1);
+                            N valor = this.matrizIesima(e.getKey()).determinante().get(Indice.E1);
 
-                    return (e.getKey().getFila() + e.getKey().getColumna()) % 2 == 0 ? valor : inversoAditivo(valor);
-                })));
+                            return (e.getKey().getFila() + e.getKey().getColumna()) % 2 == 0 ? valor : inversoAditivo(valor);
+                        },
+                        (v1,v2) -> v1,
+                        () -> this.instancia(dominio)));
     }
     
     public NumericMatriz<N> cofactores(){
-        return this.transpuesta().adjunta();
+        NumericMatriz<N> transpuesta = this.transpuesta();
+        NumericMatriz<N> transpuestaAdjunta = transpuesta.adjunta();
+        transpuesta.clear();
+        return transpuestaAdjunta;
     }
     
     public NumericMatriz<N> inversa(){
@@ -284,11 +303,13 @@ public abstract class NumericMatriz<N extends Number> extends Matriz<N> {
 
     public NumericMatriz<N> matrizUno(Dominio dominio1) {
 
-        return instancia(dominio1, dominio1.stream()
+        return dominio1.stream()
                 .collect(Collectors.toMap(
                                 k -> k,
-                                k -> getUnoValue()
-                        )));
+                                k -> getUnoValue(),
+                                (v1,v2) -> getUnoValue(),
+                                () -> instancia(dominio1)
+                        ));
 
     }
 
@@ -304,12 +325,14 @@ public abstract class NumericMatriz<N extends Number> extends Matriz<N> {
             throw new IllegalArgumentException("matrices no compatibles");
         }
         
-        return instancia(dominio, dominio.stream()
+        return dominio.stream()
                 .filter(k -> k.getFila().intValue() == k.getColumna().intValue())
                 .collect(Collectors.toMap(
                                 k -> k,
-                                k -> getUnoValue()
-                        )));
+                                k -> getUnoValue(),
+                                (v1,v2) -> getUnoValue(),
+                                () -> instancia(dominio)
+                        ));
 
     }
 
