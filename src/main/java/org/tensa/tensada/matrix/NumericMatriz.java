@@ -384,12 +384,19 @@ public abstract class NumericMatriz<N extends Number> extends Matriz<N> {
             N coT = cos(angulo);
             N siT = sin(angulo);
 
-    //        return ux.productoEscalar(siT)
-    //                .adicion(id.substraccion(uut).productoEscalar(coT))
-    //                .adicion(uut);
-            return id.productoEscalar(coT)
-                    .adicion(ux.productoEscalar(siT))
-                    .adicion(uut.productoEscalar(restaDirecta(getUnoValue(), coT)));
+//    //        return ux.productoEscalar(siT)
+//    //                .adicion(id.substraccion(uut).productoEscalar(coT))
+//    //                .adicion(uut);
+//            return id.productoEscalar(coT)
+//                    .adicion(ux.productoEscalar(siT))
+//                    .adicion(uut.productoEscalar(restaDirecta(getUnoValue(), coT)));
+            try (
+                    NumericMatriz<N> idCot = id.productoEscalar(coT);
+                    NumericMatriz<N> uxSit = ux.productoEscalar(siT);
+                    NumericMatriz<N> uut1noCot = uut.productoEscalar(restaDirecta(getUnoValue(), coT));
+                    NumericMatriz<N> adIdCotUxSit =idCot.adicion(uxSit);){
+                return adIdCotUxSit.adicion(uut1noCot);
+            }
         } catch (IOException ex) {
            throw new RejectedExecutionException("matrizRotacion", ex);
         }
