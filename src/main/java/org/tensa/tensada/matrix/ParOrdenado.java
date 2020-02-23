@@ -1,10 +1,12 @@
 package org.tensa.tensada.matrix;
 
+import java.io.Serializable;
+
 /**
  *
  * @author mtorres
  */
-public interface ParOrdenado {
+public interface ParOrdenado extends Serializable {
 
     @Override
     boolean equals(Object obj);
