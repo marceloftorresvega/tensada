@@ -24,10 +24,9 @@ public final class Dominio extends AbstractCollection<ParOrdenado> implements Pa
 
     @Override
     public Iterator<ParOrdenado> iterator() {
-        return IntStream.rangeClosed(1, indice.getColumna())
-                .boxed()
-                .flatMap(col -> IntStream.rangeClosed(1, indice.getFila())
-                .mapToObj(fil -> (ParOrdenado) new Indice(fil,col)))
+        
+        return IntStream.range(0, indice.getColumna() * indice.getFila())
+                .mapToObj(vidx -> (ParOrdenado) new Indice(1 + vidx % indice.getFila(), 1 + vidx / indice.getFila()))
                 .iterator();
     }
 
