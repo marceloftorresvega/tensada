@@ -38,6 +38,11 @@ public class BigDecimalMatriz extends NumericMatriz<BigDecimal> {
     }
 
     @Override
+    public BigDecimal mapper(double value) {
+        return BigDecimal.valueOf(value);
+    }
+
+    @Override
     public BigDecimal getCeroValue() {
         return BigDecimal.ZERO;
     }

@@ -30,6 +30,8 @@ public abstract class NumericMatriz<N extends Number> extends Matriz<N> {
         this.put(new Indice(fila, columna), valor);
         return this;
     }
+    
+    public abstract N mapper(double value);
 
     public abstract N getCeroValue();
 

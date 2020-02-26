@@ -139,6 +139,11 @@ public class DoubleMatriz extends NumericMatriz<Double> {
     }
 
     @Override
+    public Double mapper(double value) {
+        return value;
+    }
+
+    @Override
     public Double getCeroValue() {
         return (double) 0;
     }

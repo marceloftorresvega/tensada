@@ -164,6 +164,11 @@ public class FloatMatriz extends NumericMatriz<Float> {
     }
 
     @Override
+    public Float mapper(double value) {
+        return Float.valueOf((float)value);
+    }
+
+    @Override
     public Float getUnoValue() {
         return (float) 1;
     }
