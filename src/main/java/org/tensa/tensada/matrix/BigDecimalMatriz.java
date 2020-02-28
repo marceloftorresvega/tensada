@@ -24,6 +24,7 @@
 package org.tensa.tensada.matrix;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Map;
 
 
@@ -79,7 +80,7 @@ public class BigDecimalMatriz extends NumericMatriz<BigDecimal> {
 
     @Override
     public BigDecimal inversoMultiplicativo(BigDecimal prod) {
-        return BigDecimal.ONE.divide(prod);
+        return BigDecimal.ONE.divide(prod, RoundingMode.HALF_UP);
     }
 
     @Override
