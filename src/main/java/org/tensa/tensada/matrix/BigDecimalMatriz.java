@@ -74,7 +74,7 @@ public class BigDecimalMatriz extends NumericMatriz<BigDecimal> {
 
     @Override
     public BigDecimal productoDirecto(BigDecimal prod1, BigDecimal prod2) {
-        return prod1.divide(prod2);
+        return prod1.multiply(prod2);
     }
 
     @Override
