@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.function.Function;
+import java.util.function.UnaryOperator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -111,13 +112,21 @@ public abstract class NumericMatriz<N extends Number> extends Matriz<N> {
 
     public NumericMatriz<N> producto(NumericMatriz<N> parte) {
 
-        if (this.dominio.getColumna().intValue() != parte.dominio.getFila().intValue()) {
+        return productoFlexible(parte,UnaryOperator.identity(),UnaryOperator.identity());
+
+    }
+    
+    private NumericMatriz<N> productoFlexible(NumericMatriz<N> parte, UnaryOperator<ParOrdenado> punto, UnaryOperator<ParOrdenado> tenso) {
+
+        ParOrdenado este = punto.apply(dominio);
+        ParOrdenado otro = tenso.apply(parte.dominio);
+        if (este.getColumna() != otro.getFila().intValue()) {
             throw new IllegalArgumentException("matrices no compatibles");
         }
 
-        int n = this.dominio.getFila();
-        int m = this.dominio.getColumna();
-        int p = parte.dominio.getColumna();
+        int n = este.getFila();
+        int m = este.getColumna();
+        int p = otro.getColumna();
 
         Dominio resultante = new Dominio(n, p);
         return resultante.stream()
@@ -130,17 +139,18 @@ public abstract class NumericMatriz<N extends Number> extends Matriz<N> {
                                 Indice kj = new Indice(k, index.getColumna());
 
                                 return productoDirecto(
-                                        this.get(ik),
-                                        parte.get(kj));
+                                        punto.andThen(this::get).apply(ik),
+                                        tenso.andThen(parte::get).apply(kj));
 
                             })
                             .reduce(this.getCeroValue(),
-                                    (v1, v2) -> this.sumaDirecta(v1, v2)),
+                                    this::sumaDirecta),
                         (v1,v2) -> v1,
                         () -> instancia(resultante)
                     ));
 
     }
+    
     public NumericMatriz<N> productoKronecker(NumericMatriz<N> prod){
         int pdfila = prod.dominio.getFila();
         int pdcolumna = prod.dominio.getColumna();
@@ -183,12 +193,7 @@ public abstract class NumericMatriz<N extends Number> extends Matriz<N> {
 
     public NumericMatriz<N> productoPunto(NumericMatriz<N> prod) {
 
-        try(NumericMatriz<N> transpuesta = this.transpuesta()) {
-            return transpuesta.producto(prod);
-        } catch (IOException ex) {
-            throw new RejectedExecutionException("productoPunto", ex);
-        }
-
+        return this.productoFlexible(prod,ParOrdenado::transpuesta, UnaryOperator.identity());
     }
 
     public NumericMatriz<N> distanciaE2() {
@@ -196,12 +201,8 @@ public abstract class NumericMatriz<N extends Number> extends Matriz<N> {
     }
 
     public NumericMatriz<N> productoTensorial(NumericMatriz<N> parte) {
-        try (NumericMatriz<N> transpuesta = parte.transpuesta()) {
-            return producto(transpuesta );
-        } catch (IOException ex) {
-            throw new RejectedExecutionException("productoTensorial", ex);
-        }
-
+        
+        return this.productoFlexible(parte, UnaryOperator.identity(), ParOrdenado::transpuesta);
     }
 
     public NumericMatriz<N> productoCruz(NumericMatriz<N> parte) {
