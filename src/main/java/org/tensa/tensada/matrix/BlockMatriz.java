@@ -38,6 +38,10 @@ public class BlockMatriz<U> extends Matriz<Matriz<U>> {
     public BlockMatriz(Dominio dominio, Map<? extends ParOrdenado, ? extends Matriz<U>> m) {
         super(dominio, m);
     }
+
+    public BlockMatriz() {
+        super();
+    }
     
     public Matriz<U> build(){
         return merge();

@@ -24,6 +24,10 @@ public class FloatMatriz extends NumericMatriz<Float> {
         super(m.dominio, m);
     }
 
+    public FloatMatriz() {
+        super();
+    }
+    
     public static FloatMatriz fromVector(Double3DVector vector) {
 
         Dominio dominio = new Dominio(3, 1);
