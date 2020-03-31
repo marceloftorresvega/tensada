@@ -24,6 +24,10 @@ public class DoubleMatriz extends NumericMatriz<Double> {
         super(m.dominio, m);
     }
 
+    public DoubleMatriz() {
+        super();
+    }
+
     public static DoubleMatriz fromVector(Double3DVector vector) {
 
         Dominio dominio = new Dominio(3, 1);

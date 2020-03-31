@@ -38,6 +38,10 @@ public class BigDecimalMatriz extends NumericMatriz<BigDecimal> {
         super(dominio, m);
     }
 
+    public BigDecimalMatriz() {
+        super();
+    }
+
     @Override
     public BigDecimal mapper(double value) {
         return BigDecimal.valueOf(value);

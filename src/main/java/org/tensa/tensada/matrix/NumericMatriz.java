@@ -26,6 +26,10 @@ public abstract class NumericMatriz<N extends Number> extends Matriz<N> {
         super(dominio, m);
     }
 
+    public NumericMatriz() {
+        super();
+    }
+
     @Override
     public NumericMatriz<N> indexa(Integer fila, Integer columna, N valor) {
         this.put(new Indice(fila, columna), valor);
