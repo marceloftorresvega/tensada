@@ -371,6 +371,19 @@ public abstract class NumericMatriz<N extends Number> extends Matriz<N> {
 
     }
 
+    public NumericMatriz<N> norma() {
+        NumericMatriz<N> retorno = this.instancia(new Dominio(Indice.D1));
+        N norma = this.values().stream()
+                .map(a -> this.productoDirecto(a, a))
+                .reduce(this::sumaDirecta)
+                .map(N::doubleValue)
+                .map(Math::sqrt)
+                .map(this::mapper)
+                .orElseGet(this::getCeroValue);
+        retorno.put(Indice.D1, norma);
+        return retorno;
+    }
+    
     public NumericMatriz<N> matrizIdentidad() {
 
         return matrizIdentidad(dominio);
