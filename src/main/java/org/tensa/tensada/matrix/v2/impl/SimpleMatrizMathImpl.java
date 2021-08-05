@@ -28,6 +28,7 @@ import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
@@ -270,36 +271,45 @@ public class SimpleMatrizMathImpl<N extends Number> implements MatrizMath<N> {
 
     @Override
     public Matriz<N> adicion(Matriz<N> sumando1, Matriz<N> sumando2) {
-        if (!sumando1.getDominio().equals(sumando2.getDominio())) {
-            throw new IllegalArgumentException("matrices no compatibles");
-        }
-
-        Stream<Entry<ParOrdenado, N>> s1 = sumando1.entrySet().stream();
-        Stream<Entry<ParOrdenado, N>> s2 = sumando2.entrySet().stream();
-        return Stream.concat(s1, s2).filter(e -> Objects.nonNull(e.getValue()))
-                .collect(toConcurrentMap(
-                        Entry::getKey,
-                        Entry::getValue,
-                        terminalMath::sumaDirecta,
-                        () -> instanciaMatriz.instancia(sumando1.getDominio())));
+        return this.adicion(Stream.of(sumando1, sumando2).toArray(i -> new Matriz[i]));
     }
 
     @Override
     public Matriz<N> adicion(Matriz<N>... sumando) {
-        return Stream.of(sumando)
-                .reduce(this::adicion)
-                .orElseGet(() -> instanciaMatriz.instancia(sumando[0].getDominio()));
+        Dominio dominio0 = sumando[0].getDominio();
+        if (!Stream.of(sumando).skip(1).map(Matriz::getDominio).allMatch(dominio0::equals)) {
+            throw new IllegalArgumentException("matrices no compatibles");
+        }
+        return Stream.of(sumando).parallel()
+                .map(Matriz::entrySet)
+                .flatMap(Set::stream)
+                .filter(e -> Objects.nonNull(e.getValue()))
+                .collect(toConcurrentMap(
+                        Entry::getKey,
+                        Entry::getValue,
+                        terminalMath::sumaDirecta,
+                        () -> instanciaMatriz.instancia(dominio0)));
     }
 
     @Override
     public Matriz<N> sustraccion(Matriz<N> minuendo, Matriz<N> sustraendo) {
-        if (!minuendo.getDominio().equals(sustraendo.getDominio())) {
+        return this.sustraccion(Stream.of(minuendo, sustraendo).toArray(i -> new Matriz[i]));
+    }
+
+    @Override
+    public Matriz<N> sustraccion(Matriz<N>... sustraendo) {
+        Dominio dominio0 = sustraendo[0].getDominio();
+        if (!Stream.of(sustraendo).skip(1).map(Matriz::getDominio).allMatch(dominio0::equals)) {
             throw new IllegalArgumentException("matrices no compatibles");
         }
-
+        Matriz<N> minuendo = sustraendo[0];
         Stream<Entry<ParOrdenado, N>> m = minuendo.entrySet().stream().filter(e -> Objects.nonNull(e.getValue()));
-        Stream<Entry<ParOrdenado, N>> s = sustraendo.entrySet().stream().filter(e -> Objects.nonNull(e.getValue())).map(e -> new AbstractMap.SimpleEntry<>(e.getKey(), terminalMath.inversoAditivo(e.getValue())));
-        return Stream.concat(m, s)
+        Stream<Entry<ParOrdenado, N>> s = Stream.of(sustraendo).skip(1)
+                .map(Matriz::entrySet)
+                .flatMap(Set::stream)
+                .filter(e -> Objects.nonNull(e.getValue()))
+                .map(e -> new AbstractMap.SimpleEntry<>(e.getKey(), terminalMath.inversoAditivo(e.getValue())));
+        return Stream.concat(m, s).parallel()
                 .collect(toConcurrentMap(
                         Entry::getKey,
                         Entry::getValue,

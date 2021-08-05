@@ -68,6 +68,8 @@ public interface MatrizMath<N extends Number> {
     
     Matriz<N> sustraccion(Matriz<N> minuendo, Matriz<N> sustraendo);
     
+    Matriz<N> sustraccion(Matriz<N> ... sustraendo);
+    
     Matriz<N> producto(Matriz<N> multiplo1, Matriz<N> multiplo2);
     
     Matriz<N> productoPunto(Matriz<N> multiplo1, Matriz<N> multiplo2);
