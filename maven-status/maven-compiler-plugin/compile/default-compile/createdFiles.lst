@@ -1,0 +1,17 @@
+org\tensa\tensada\matrix\ParOrdenado.class
+org\tensa\tensada\matrix\DoubleMatriz.class
+org\tensa\tensada\matrix\Dominio.class
+org\tensa\tensada\matrix\BlockMatriz.class
+org\tensa\tensada\vector\impl\DoubleVector3DImpl.class
+org\tensa\tensada\matrix\FloatMatriz.class
+org\tensa\tensada\matrix\NumericMatriz.class
+org\tensa\tensada\vector\AbstractMatrix3DVector.class
+org\tensa\tensada\matrix\Matriz.class
+org\tensa\tensada\vector\AbstractData3DVector.class
+org\tensa\tensada\vector\AbstractFast3DVector.class
+org\tensa\tensada\matrix\BigDecimalMatriz.class
+org\tensa\tensada\vector\Data3D.class
+org\tensa\tensada\vector\Double3DVector.class
+org\tensa\tensada\matrix\BlockMatriz$MatrizWrapperImpl.class
+org\tensa\tensada\matrix\Indice.class
+org\tensa\tensada\vector\AbstractBaseDouble3DVector.class
