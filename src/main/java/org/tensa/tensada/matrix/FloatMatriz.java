@@ -188,17 +188,109 @@ public class FloatMatriz extends NumericMatriz<Float> {
     }
 
     @Override
-    public Float cos(Double angulo) {
+    public Float cos(Float angulo) {
         return (float)Math.cos(angulo);
     }
 
     @Override
-    public Float sin(Double angulo) {
+    public Float sin(Float angulo) {
         return (float)Math.sin(angulo);
     }
 
     @Override
-    public FloatMatriz matrizRotacion(Double angulo) {
+    public Float tan(Float ang) {
+        return (float) Math.tan(ang);
+    }
+
+    @Override
+    public Float sec(Float ang) {
+        return 1f / (float)Math.cos(ang);
+    }
+
+    @Override
+    public Float csc(Float ang) {
+        return 1f / (float)Math.sin(ang);
+    }
+
+    @Override
+    public Float arcsen(Float x) {
+        return (float)Math.asin(x);
+    }
+
+    @Override
+    public Float arccos(Float x) {
+        return (float)Math.acos(x);
+    }
+
+    @Override
+    public Float arctan(Float x) {
+        return (float)Math.atan(x);
+    }
+
+    @Override
+    public Float senh(Float x) {
+        return (float)Math.sinh(x);
+    }
+
+    @Override
+    public Float cosh(Float x) {
+        return (float)Math.cosh(x);
+    }
+
+    @Override
+    public Float tanh(Float x) {
+        return (float)Math.tanh(x);
+    }
+
+    @Override
+    public Float arcsenh(Float x) {
+        float acum = 0 ;
+        for (int n=0 ; n< 6; n++) {
+            float v2np1 = 2*n +1;
+            float fn = fact(2*n);
+            Float vfnp2 = pow((float)fact(n),2f);
+            float content = fn / pow(4f,(float)n) / vfnp2 / v2np1 * pow(x,v2np1);
+            if (potMenos1(n)>0) {
+                acum+= content;
+            } else {
+                acum-= content;
+            }
+        }
+        return acum;
+    }
+
+    @Override
+    public Float arctanh(Float x) {
+        float acum = 0;
+        for (int n = 0; n < 6; n++) {
+            float v2nm1 = 2*n +1;
+            acum += pow(x,v2nm1) / v2nm1;
+        }
+        return acum;
+    }
+
+    @Override
+    public Float exp(Float x) {
+        return (float)Math.exp(x);
+    }
+
+    @Override
+    public Float ln(Float x) {
+        return (float)Math.log(x);
+    }
+
+    @Override
+    public Float abs(Float x) {
+        return Math.abs(x);
+    }
+
+    @Override
+    public Float pow(Float a, Float x) {
+        return (float)Math.pow(a, x);
+    }
+
+    @Override
+    public FloatMatriz matrizRotacion(Float angulo) {
         return (FloatMatriz) super.matrizRotacion(angulo);
     }
 
