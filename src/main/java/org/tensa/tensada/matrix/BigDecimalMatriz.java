@@ -24,7 +24,6 @@
 package org.tensa.tensada.matrix;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.Map;
 
@@ -240,6 +239,27 @@ public class BigDecimalMatriz extends NumericMatriz<BigDecimal> {
             }
         }
         return acum;
+    }
+
+    @Override
+    public BigDecimal arccosh(BigDecimal x) {
+        BigDecimal acum = BigDecimal.ZERO ;
+        BigDecimal v2 = BigDecimal.valueOf(2);
+        for (int n=1 ; n< 6; n++) {
+            int v2n = 2*n;
+            BigDecimal v2nBd = BigDecimal.valueOf(v2n);
+            BigDecimal fac2n = BigDecimal.valueOf(fact(v2n));
+            BigDecimal facn = BigDecimal.valueOf(fact(n));
+            
+            acum = acum.add(
+                fac2n.divide(pow(v2,v2nBd))
+                        .divide(pow(facn,v2))
+                        .multiply(pow(x,v2nBd.negate())).divide(v2nBd)
+            );
+        }
+        
+        return ln(v2.multiply(x)).subtract(acum);
+        
     }
 
     @Override

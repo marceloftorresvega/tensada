@@ -260,6 +260,21 @@ public class DoubleMatriz extends NumericMatriz<Double> {
     }
 
     @Override
+    public Double arccosh(Double x) {
+        double acum = 0 ;
+        for (int n=1 ; n< 6; n++) {
+            int v2n = 2*n;
+            double fac2n = fact(v2n);
+            double facn = fact(n);
+            
+            acum += fac2n / pow(2.,(double)v2n) / pow(facn,2.) * pow(x,(double)-v2n)/(double)v2n;
+        }
+        
+        return ln(2*x) - acum;
+        
+    }
+
+    @Override
     public Double arctanh(Double x) {
         double acum = 0;
         for (int n = 0; n < 6; n++) {

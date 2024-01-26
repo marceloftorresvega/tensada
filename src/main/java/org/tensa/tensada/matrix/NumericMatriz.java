@@ -75,6 +75,8 @@ public abstract class NumericMatriz<N extends Number> extends Matriz<N> {
 
     public abstract N arcsenh(N x);
 
+    public abstract N arccosh(N x);
+
     public abstract N arctanh(N x);
 
     public abstract N exp(N x);

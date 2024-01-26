@@ -260,6 +260,21 @@ public class FloatMatriz extends NumericMatriz<Float> {
     }
 
     @Override
+    public Float arccosh(Float x) {
+        float acum = 0 ;
+        for (int n=1 ; n< 6; n++) {
+            int v2n = 2*n;
+            float fac2n = fact(v2n);
+            float facn = fact(n);
+            
+            acum += fac2n / pow(2f,(float)v2n) / pow(facn,2f) * pow(x,(float)-v2n)/(float)v2n;
+        }
+        
+        return ln(2*x) - acum;
+        
+    }
+
+    @Override
     public Float arctanh(Float x) {
         float acum = 0;
         for (int n = 0; n < 6; n++) {
