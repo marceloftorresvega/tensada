@@ -18,6 +18,9 @@ import java.util.stream.IntStream;
  */
 public abstract class NumericMatriz<N extends Number> extends Matriz<N> {
 
+    private final static long[] hardFact =   {1, 1,     2,  6,  24, 120, 720, 5040, 40320, 362880, 3628800, 1307674368000L, 2432902008176640000L};
+    private final static long[] hardEule =   {1, 0,    -1,  0,   5,   0, -61,    0,  1385, -50521,       0,        2702765,                    0, -199360981};
+    private final static double[] hardBern = {1, -1/2, 1/6, 0, -1/30, 0, 1/42,   0, -1/30,      0,    5/66,              0,            -691/2730,          0};
     public NumericMatriz(Dominio dominio) {
         super(dominio);
     }
@@ -48,9 +51,41 @@ public abstract class NumericMatriz<N extends Number> extends Matriz<N> {
 
     public abstract N inversoAditivo(N sum1);
 
-    public abstract N cos(Double sum1);
+    public abstract N cos(N ang);
 
-    public abstract N sin(Double sum1);
+    public abstract N sin(N ang);
+
+    public abstract N tan(N ang);
+
+    public abstract N sec(N ang);
+
+    public abstract N csc(N ang);
+
+    public abstract N arcsen(N x);
+
+    public abstract N arccos(N x);
+
+    public abstract N arctan(N x);
+
+    public abstract N senh(N x);
+
+    public abstract N cosh(N x);
+
+    public abstract N tanh(N x);
+
+    public abstract N arcsenh(N x);
+
+    public abstract N arccosh(N x);
+
+    public abstract N arctanh(N x);
+
+    public abstract N exp(N x);
+
+    public abstract N ln(N x);
+    
+    public abstract N abs(N x);
+    
+    public abstract N pow(N a, N x);
 
     public abstract N productoDirecto(N prod1, N prod2);
     
@@ -59,6 +94,22 @@ public abstract class NumericMatriz<N extends Number> extends Matriz<N> {
     public abstract NumericMatriz<N> instancia(Dominio dominio);
 
     public abstract NumericMatriz<N> instancia(Dominio dominio, Map<? extends ParOrdenado, ? extends N> m);
+    
+    public long fact(int n) {
+        return hardFact[n];
+    }
+    
+    public long euler(int n) {
+        return hardEule[n];
+    }
+    
+    public double bern(int n) {
+        return hardBern[n];
+    }
+    
+    public int potMenos1(int n ) {
+        return ( (n & 1) == 0 )? 1 : -1;
+    }
 
     @Override
     public N get(Object key) {
@@ -390,7 +441,7 @@ public abstract class NumericMatriz<N extends Number> extends Matriz<N> {
 
     }
 
-    public NumericMatriz<N> matrizRotacion(NumericMatriz<N> eje, Double angulo) {
+    public NumericMatriz<N> matrizRotacion(NumericMatriz<N> eje, N angulo) {
 
         if (eje.dominio.getFila() < 3) {
             throw new IllegalArgumentException("matrices no compatibles");
@@ -423,7 +474,7 @@ public abstract class NumericMatriz<N extends Number> extends Matriz<N> {
 
     }
 
-    public NumericMatriz<N> matrizRotacion(Double angulo) {
+    public NumericMatriz<N> matrizRotacion(N angulo) {
         return matrizRotacion(this, angulo);
     }
 

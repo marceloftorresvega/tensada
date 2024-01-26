@@ -188,13 +188,120 @@ public class DoubleMatriz extends NumericMatriz<Double> {
     }
 
     @Override
-    public Double cos(Double sum1) {
-        return Math.cos(sum1);
+    public Double cos(Double ang) {
+        return Math.cos(ang);
     }
 
     @Override
-    public Double sin(Double sum1) {
-        return Math.sin(sum1);
+    public Double sin(Double ang) {
+        return Math.sin(ang);
+    }
+
+    @Override
+    public Double tan(Double ang) {
+        return Math.tan(ang);
+    }
+
+    @Override
+    public Double sec(Double ang) {
+        return 1.0 / Math.cos(ang);
+    }
+
+    @Override
+    public Double csc(Double ang) {
+        return 1.0 / Math.sin(ang);
+    }
+
+    @Override
+    public Double arcsen(Double x) {
+        return Math.asin(x);
+    }
+
+    @Override
+    public Double arccos(Double x) {
+        return Math.asin(x);
+    }
+
+    @Override
+    public Double arctan(Double x) {
+        return Math.atan(x);
+    }
+
+    @Override
+    public Double senh(Double x) {
+        return Math.sinh(x);
+    }
+
+    @Override
+    public Double cosh(Double x) {
+        return Math.cosh(x);
+    }
+
+    @Override
+    public Double tanh(Double x) {
+        return Math.tanh(x);
+    }
+
+    @Override
+    public Double arcsenh(Double x) {
+        double acum = 0 ;
+        for (int n=0 ; n< 6; n++) {
+            double v2np1 = 2*n +1;
+            double fn = fact(2*n);
+            Double vfnp2 = pow((double)fact(n),2.);
+            double content = fn / pow(4.,(double)n) / vfnp2 / v2np1 * pow(x,v2np1);
+            if (potMenos1(n)>0) {
+                acum+= content;
+            } else {
+                acum-= content;
+            }
+        }
+        return acum;
+    }
+
+    @Override
+    public Double arccosh(Double x) {
+        double acum = 0 ;
+        for (int n=1 ; n< 6; n++) {
+            int v2n = 2*n;
+            double fac2n = fact(v2n);
+            double facn = fact(n);
+            
+            acum += fac2n / pow(2.,(double)v2n) / pow(facn,2.) * pow(x,(double)-v2n)/(double)v2n;
+        }
+        
+        return ln(2*x) - acum;
+        
+    }
+
+    @Override
+    public Double arctanh(Double x) {
+        double acum = 0;
+        for (int n = 0; n < 6; n++) {
+            double v2nm1 = 2*n +1;
+            acum += pow(x,v2nm1) / v2nm1;
+        }
+        return acum;
+    }
+
+    @Override
+    public Double exp(Double x) {
+        return Math.exp(x);
+    }
+
+    @Override
+    public Double ln(Double x) {
+        return Math.log(x);
+    }
+
+    @Override
+    public Double abs(Double x) {
+        return Math.abs(x);
+    }
+
+    @Override
+    public Double pow(Double a, Double x) {
+        return Math.pow(a, x);
     }
 
     @Override
