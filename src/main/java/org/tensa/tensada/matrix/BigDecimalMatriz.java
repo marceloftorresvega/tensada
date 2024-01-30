@@ -245,7 +245,7 @@ public class BigDecimalMatriz extends NumericMatriz<BigDecimal> {
     public BigDecimal arccosh(BigDecimal x) {
         BigDecimal acum = BigDecimal.ZERO ;
         BigDecimal v2 = BigDecimal.valueOf(2);
-        for (int n=1 ; n< 6; n++) {
+        for (int n=1 ; n< 9; n++) {
             int v2n = 2*n;
             BigDecimal v2nBd = BigDecimal.valueOf(v2n);
             BigDecimal fac2n = BigDecimal.valueOf(fact(v2n));
