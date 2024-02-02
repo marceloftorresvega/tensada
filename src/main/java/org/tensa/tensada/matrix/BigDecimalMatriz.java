@@ -25,10 +25,26 @@ package org.tensa.tensada.matrix;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.util.HashMap;
 import java.util.Map;
 
 
 public class BigDecimalMatriz extends NumericMatriz<BigDecimal> {
+    
+    private final static BigDecimal extEuler[] = {
+        new BigDecimal("15514534163557086905"),
+        BigDecimal.ZERO,
+        new BigDecimal("-4087072509293123892361"),
+        BigDecimal.ZERO,
+        new BigDecimal("1252259641403629865468285"),
+        BigDecimal.ZERO,
+        new BigDecimal("-441543893249023104553682821"),
+        BigDecimal.ZERO,
+        new BigDecimal("177519391579539289436664789665"),
+        BigDecimal.ZERO
+    };
+    
+    private final static HashMap<Integer,BigDecimal> cacheBern = new HashMap<>();
 
     public BigDecimalMatriz(Dominio dominio) {
         super(dominio);
@@ -70,9 +86,9 @@ public class BigDecimalMatriz extends NumericMatriz<BigDecimal> {
     @Override
     public BigDecimal cos(BigDecimal ang) {
         BigDecimal acum = BigDecimal.ZERO;
-        for (int n =0; n<10; n++) {
+        for (int n =0; n<15; n++) {
             int v2n = 2*n;
-            BigDecimal content = ang.pow(v2n).divide(BigDecimal.valueOf(fact(v2n)), MathContext.DECIMAL128);
+            BigDecimal content = ang.pow(v2n).divide(factBd(v2n), MathContext.DECIMAL128);
             if( potMenos1(n)>0) {
                 acum = acum.add(content);
             } else {
@@ -85,9 +101,9 @@ public class BigDecimalMatriz extends NumericMatriz<BigDecimal> {
     @Override
     public BigDecimal sin(BigDecimal ang) {
         BigDecimal acum = BigDecimal.ZERO;
-        for (int n =0; n<10; n++) {
+        for (int n =0; n<15; n++) {
             int v2np1 = 2*n+1;
-            BigDecimal content = ang.pow(v2np1).divide(BigDecimal.valueOf(fact(v2np1)), MathContext.DECIMAL128);
+            BigDecimal content = ang.pow(v2np1).divide(factBd(v2np1), MathContext.DECIMAL128);
             if( potMenos1(n)>0) {
                 acum = acum.add(content);
             } else {
@@ -99,62 +115,68 @@ public class BigDecimalMatriz extends NumericMatriz<BigDecimal> {
 
     @Override
     public BigDecimal tan(BigDecimal ang) {
-        BigDecimal acum = BigDecimal.ZERO;
-        BigDecimal v4 = BigDecimal.valueOf(4);
-        BigDecimal v1 = BigDecimal.ONE;
-        for (int n =1; n<10; n++) {
-            int v2n = 2*n;
-            BigDecimal b2n = BigDecimal.valueOf(bern(v2n));
-            BigDecimal f2n = BigDecimal.valueOf(fact(v2n));
-            BigDecimal content = b2n.multiply(v4.negate().pow(n, MathContext.DECIMAL128), MathContext.DECIMAL128).multiply(v1.subtract(v4.pow(n)), MathContext.DECIMAL128).divide(f2n, MathContext.DECIMAL128).multiply(ang.pow(v2n-1, MathContext.DECIMAL128), MathContext.DECIMAL128);
-            acum = acum.add(content);
-        }
-        return acum;
+        return sin(ang).divide(cos(ang), MathContext.DECIMAL128);
+//        BigDecimal acum = BigDecimal.ZERO;
+//        BigDecimal v4 = BigDecimal.valueOf(4);
+//        BigDecimal v1 = BigDecimal.ONE;
+//        for (int n =1; n<15; n++) {
+//            int v2n = 2*n;
+//            BigDecimal b2n = bernBd(v2n);
+//            BigDecimal f2n = factBd(v2n);
+//            BigDecimal content = b2n.multiply(v4.negate().pow(n, MathContext.DECIMAL128), MathContext.DECIMAL128).multiply(v1.subtract(v4.pow(n)), MathContext.DECIMAL128).divide(f2n, MathContext.DECIMAL128).multiply(ang.pow(v2n-1, MathContext.DECIMAL128), MathContext.DECIMAL128);
+//            acum = acum.add(content);
+//        }
+//        return acum;
         
     }
 
     @Override
     public BigDecimal sec(BigDecimal ang) {
-        BigDecimal acum = BigDecimal.ZERO;
-        for (int n =0; n<10; n++) {
-            int v2n = 2*n;
-            BigDecimal veu2n = BigDecimal.valueOf(euler(v2n));
-            BigDecimal content = ang.pow(v2n, MathContext.DECIMAL128).divide(BigDecimal.valueOf(fact(v2n)), MathContext.DECIMAL128).multiply(veu2n, MathContext.DECIMAL128);
-            if( potMenos1(n)>0) {
-                acum = acum.add(content);
-            } else {
-                acum = acum.subtract(content);
-            }
-        }
-        return acum;
+//        BigDecimal acum = BigDecimal.ZERO;
+//        for (int n =0; n<18; n++) {
+//            int v2n = 2*n;
+//            BigDecimal veu2n = eulerBd(v2n);
+//            BigDecimal vfact2n = factBd(v2n);
+//            BigDecimal content = ang.pow(v2n, MathContext.DECIMAL128).divide(vfact2n, MathContext.DECIMAL128).multiply(veu2n, MathContext.DECIMAL128);
+//            if( potMenos1(n)>0) {
+//                acum = acum.add(content);
+//            } else {
+//                acum = acum.subtract(content);
+//            }
+//        }
+//        return acum;
+        return cos(ang).pow(-1, MathContext.DECIMAL128);
     }
 
     @Override
     public BigDecimal csc(BigDecimal ang) {
-        BigDecimal acum = BigDecimal.ZERO;
-        BigDecimal v2 = BigDecimal.valueOf(2);
-        BigDecimal v1 = BigDecimal.ONE;
-        for (int n =1; n<10; n++) {
-            int v2n = 2*n;
-            int v2nm1 = 2*n -1;
-            BigDecimal b2n = BigDecimal.valueOf(bern(v2n));
-            BigDecimal f2n = BigDecimal.valueOf(fact(v2n));
-            BigDecimal content = v1.negate().pow(n-1).multiply(v2.pow(v2nm1, MathContext.DECIMAL128).subtract(v1), MathContext.DECIMAL128).multiply(b2n, MathContext.DECIMAL128)
-                    .divide(f2n, MathContext.DECIMAL128).multiply(ang.pow(v2nm1, MathContext.DECIMAL128), MathContext.DECIMAL128);
-            acum = acum.add(content);
-        }
-        return acum.multiply(v2);
+        return sin(ang).pow(-1, MathContext.DECIMAL128);
+        
+//        BigDecimal acum = BigDecimal.ZERO;
+//        BigDecimal v2 = BigDecimal.valueOf(2);
+//        BigDecimal v1 = BigDecimal.ONE;
+//        for (int n =1; n<25; n++) {
+//            int v2n = 2*n;
+//            int v2nm1 = 2*n -1;
+//            BigDecimal b2n = bernBd(v2n);
+//            BigDecimal f2n = factBd(v2n);
+//            BigDecimal content = v1.negate().pow(n-1).multiply(v2.pow(v2nm1, MathContext.DECIMAL128).subtract(v1), MathContext.DECIMAL128).multiply(b2n, MathContext.DECIMAL128)
+//                    .divide(f2n, MathContext.DECIMAL128).multiply(ang.pow(v2nm1, MathContext.DECIMAL128), MathContext.DECIMAL128);
+//            acum = acum.add(content);
+//        }
+//        return acum.multiply(v2);
     }
 
     @Override
     public BigDecimal arcsen(BigDecimal x) {
         BigDecimal acum = BigDecimal.ZERO;
         BigDecimal v4 = BigDecimal.valueOf(4);
-        for (int n =0; n<10; n++) {
-            int v2np1 = 2*n+1;
+        for (int n =0; n<90; n++) {
+            int v2n = 2*n;
+            int v2np1 = v2n+1;
             BigDecimal v2np1Bd = BigDecimal.valueOf(v2np1);
-            BigDecimal fn = BigDecimal.valueOf(fact(n));
-            BigDecimal f2n = BigDecimal.valueOf(fact(2*n));
+            BigDecimal fn = factBd(n);
+            BigDecimal f2n = factBd(v2n);
             BigDecimal content = f2n.divide(v4.pow(n, MathContext.DECIMAL128).multiply(fn.pow(2, MathContext.DECIMAL128), MathContext.DECIMAL128).multiply(v2np1Bd, MathContext.DECIMAL128), MathContext.DECIMAL128).multiply(x.pow(v2np1, MathContext.DECIMAL128), MathContext.DECIMAL128);
             acum = acum.add(content);
         }
@@ -165,7 +187,7 @@ public class BigDecimalMatriz extends NumericMatriz<BigDecimal> {
     public BigDecimal arccos(BigDecimal x) {
         BigDecimal pi = BigDecimal.valueOf(Math.PI);
         BigDecimal v2 = BigDecimal.valueOf(2);
-        return pi.divide(v2, MathContext.DECIMAL128).subtract(arcsen(x));
+        return pi.divide(v2, MathContext.DECIMAL128).subtract(arcsen(x), MathContext.DECIMAL128);
     }
 
     @Override
@@ -187,9 +209,9 @@ public class BigDecimalMatriz extends NumericMatriz<BigDecimal> {
     @Override
     public BigDecimal senh(BigDecimal x) {
         BigDecimal acum = BigDecimal.ZERO;
-        for (int n =0; n<10; n++) {
+        for (int n =0; n<30; n++) {
             int v2np1 = 2*n +1;
-            BigDecimal f2np1 = BigDecimal.valueOf(fact(v2np1));
+            BigDecimal f2np1 = factBd(v2np1);
             acum = acum.add(x.pow(v2np1, MathContext.DECIMAL128).divide(f2np1, MathContext.DECIMAL128));
         }
         return acum;
@@ -198,9 +220,9 @@ public class BigDecimalMatriz extends NumericMatriz<BigDecimal> {
     @Override
     public BigDecimal cosh(BigDecimal x) {
         BigDecimal acum = BigDecimal.ZERO;
-        for (int n =0; n<10; n++) {
+        for (int n =0; n<30; n++) {
             int v2n = 2*n;
-            BigDecimal f2n = BigDecimal.valueOf(fact(v2n));
+            BigDecimal f2n = factBd(v2n);
             acum = acum.add(x.pow(v2n, MathContext.DECIMAL128).divide(f2n, MathContext.DECIMAL128));
         }
         return acum;
@@ -208,30 +230,32 @@ public class BigDecimalMatriz extends NumericMatriz<BigDecimal> {
 
     @Override
     public BigDecimal tanh(BigDecimal x) {
-        BigDecimal acum = BigDecimal.ZERO;
-        BigDecimal v4 = BigDecimal.valueOf(4);
-        BigDecimal v1 = BigDecimal.ONE;
-        for (int n =1; n<10; n++) {
-            int v2n = 2*n;
-            BigDecimal b2n = BigDecimal.valueOf(bern(v2n));
-            BigDecimal f2n = BigDecimal.valueOf(fact(v2n));
-            BigDecimal content = b2n.multiply(v4.pow(n, MathContext.DECIMAL128), MathContext.DECIMAL128).multiply(v4.pow(n, MathContext.DECIMAL128).subtract(v1, MathContext.DECIMAL128))
-                    .divide(f2n, MathContext.DECIMAL128)
-                    .multiply(x.pow(v2n-1, MathContext.DECIMAL128), MathContext.DECIMAL128);
-            acum = acum.add(content);
-        }
-        return acum;
+        return senh(x).divide(cosh(x), MathContext.DECIMAL128);
+//        BigDecimal acum = BigDecimal.ZERO;
+//        BigDecimal v4 = BigDecimal.valueOf(4);
+//        BigDecimal v1 = BigDecimal.ONE;
+//        for (int n =1; n<15; n++) {
+//            int v2n = 2*n;
+//            BigDecimal b2n = bernBd(v2n);
+//            BigDecimal f2n = factBd(v2n);
+//            BigDecimal content = b2n.multiply(v4.pow(n, MathContext.DECIMAL128), MathContext.DECIMAL128).multiply(v4.pow(n, MathContext.DECIMAL128).subtract(v1, MathContext.DECIMAL128))
+//                    .divide(f2n, MathContext.DECIMAL128)
+//                    .multiply(x.pow(v2n-1, MathContext.DECIMAL128), MathContext.DECIMAL128);
+//            acum = acum.add(content);
+//        }
+//        return acum;
     }
 
     @Override
     public BigDecimal arcsenh(BigDecimal x) {
         BigDecimal acum = BigDecimal.ZERO;
         BigDecimal v4 = BigDecimal.valueOf(4);
-        for (int n =0; n<10; n++) {
-            int v2np1 = 2*n+1;
+        for (int n =0; n<15; n++) {
+            int v2n = 2*n;
+            int v2np1 = v2n+1;
             BigDecimal v2np1Bd = BigDecimal.valueOf(v2np1);
-            BigDecimal fn = BigDecimal.valueOf(fact(n));
-            BigDecimal f2n = BigDecimal.valueOf(fact(2*n));
+            BigDecimal fn = factBd(n);
+            BigDecimal f2n = factBd(v2n);
             BigDecimal content = f2n.divide(v4.pow(n, MathContext.DECIMAL128).multiply(fn.pow(2, MathContext.DECIMAL128), MathContext.DECIMAL128).multiply(v2np1Bd, MathContext.DECIMAL128), MathContext.DECIMAL128).multiply(x.pow(v2np1, MathContext.DECIMAL128), MathContext.DECIMAL128);
             
             if( potMenos1(n)>0) {
@@ -247,11 +271,11 @@ public class BigDecimalMatriz extends NumericMatriz<BigDecimal> {
     public BigDecimal arccosh(BigDecimal x) {
         BigDecimal acum = BigDecimal.ZERO ;
         BigDecimal v2 = BigDecimal.valueOf(2);
-        for (int n=1 ; n< 9; n++) {
+        for (int n=1 ; n< 15; n++) {
             int v2n = 2*n;
             BigDecimal v2nBd = BigDecimal.valueOf(v2n);
-            BigDecimal fac2n = BigDecimal.valueOf(fact(v2n));
-            BigDecimal facn = BigDecimal.valueOf(fact(n));
+            BigDecimal fac2n = factBd(v2n);
+            BigDecimal facn = factBd(n);
             
             acum = acum.add(
                 fac2n.divide(v2.pow(v2n, MathContext.DECIMAL128), MathContext.DECIMAL128)
@@ -267,7 +291,7 @@ public class BigDecimalMatriz extends NumericMatriz<BigDecimal> {
     @Override
     public BigDecimal arctanh(BigDecimal x) {
         BigDecimal acum = BigDecimal.ZERO;
-        for (int n =0; n<10; n++) {
+        for (int n =0; n<30; n++) {
             int v2np1 = 2*n +1;
             BigDecimal v2np1Bd = BigDecimal.valueOf(v2np1);
             BigDecimal content = x.pow(v2np1, MathContext.DECIMAL128).divide(v2np1Bd, MathContext.DECIMAL128);
@@ -280,7 +304,6 @@ public class BigDecimalMatriz extends NumericMatriz<BigDecimal> {
     public BigDecimal exp(BigDecimal x) {
         BigDecimal acum = BigDecimal.ZERO;
         for(int n = 0 ; n < 40 ; n++) {
-            System.out.println(factBd(n));
             acum = acum.add(
                     x.pow(n, MathContext.DECIMAL128).divide(factBd(n), MathContext.DECIMAL128)
                     , MathContext.DECIMAL128);
@@ -297,6 +320,39 @@ public class BigDecimalMatriz extends NumericMatriz<BigDecimal> {
                 acum = acum.multiply(BigDecimal.valueOf(i), MathContext.DECIMAL128);
             }
             return acum;
+        }
+    }
+    
+    private BigDecimal bernBd(int n) {
+        if ( n<21) {
+            return BigDecimal.valueOf(bern(n));
+        } else {
+            BigDecimal cache = cacheBern.get(n);
+            if (cache!= null) {
+                return cache;
+            }
+            BigDecimal Bn = factBd(n).negate();
+            BigDecimal acum = BigDecimal.ZERO;
+            for (int k = 0; k<n; k++) {
+                acum = acum.add(
+                        bernBd(k).divide(
+                                factBd(k)
+                                , MathContext.DECIMAL128).divide(
+                                        factBd(n+1-k), 
+                                        MathContext.DECIMAL128)
+                        , MathContext.DECIMAL128);
+            }
+            Bn = Bn.multiply(acum, MathContext.DECIMAL128);
+            cacheBern.put(n, Bn);
+            return Bn;
+        }
+    }
+    
+    private BigDecimal eulerBd(int n) {
+        if (n<24) {
+            return BigDecimal.valueOf(euler(n));
+        } else {
+            return extEuler[n-24];
         }
     }
     
