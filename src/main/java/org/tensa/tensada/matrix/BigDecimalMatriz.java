@@ -115,6 +115,9 @@ public class BigDecimalMatriz extends NumericMatriz<BigDecimal> {
 
     @Override
     public BigDecimal tan(BigDecimal ang) {
+        if (ang.abs(MathContext.DECIMAL128).doubleValue()>= Math.PI/2.0) {
+            throw new IllegalArgumentException();
+        }
         return sin(ang).divide(cos(ang), MathContext.DECIMAL128);
 //        BigDecimal acum = BigDecimal.ZERO;
 //        BigDecimal v4 = BigDecimal.valueOf(4);
@@ -132,6 +135,9 @@ public class BigDecimalMatriz extends NumericMatriz<BigDecimal> {
 
     @Override
     public BigDecimal sec(BigDecimal ang) {
+        if (ang.abs(MathContext.DECIMAL128).doubleValue()>= Math.PI/2.0) {
+            throw new IllegalArgumentException();
+        }
 //        BigDecimal acum = BigDecimal.ZERO;
 //        for (int n =0; n<18; n++) {
 //            int v2n = 2*n;
@@ -150,6 +156,9 @@ public class BigDecimalMatriz extends NumericMatriz<BigDecimal> {
 
     @Override
     public BigDecimal csc(BigDecimal ang) {
+        if (ang.abs(MathContext.DECIMAL128).doubleValue()>= Math.PI) {
+            throw new IllegalArgumentException();
+        }
         return sin(ang).pow(-1, MathContext.DECIMAL128);
         
 //        BigDecimal acum = BigDecimal.ZERO;
@@ -169,6 +178,9 @@ public class BigDecimalMatriz extends NumericMatriz<BigDecimal> {
 
     @Override
     public BigDecimal arcsen(BigDecimal x) {
+        if (x.abs(MathContext.DECIMAL128).doubleValue()>= 1.0) {
+            throw new IllegalArgumentException();
+        }
         BigDecimal acum = BigDecimal.ZERO;
         BigDecimal v4 = BigDecimal.valueOf(4);
         for (int n =0; n<90; n++) {
@@ -192,6 +204,9 @@ public class BigDecimalMatriz extends NumericMatriz<BigDecimal> {
 
     @Override
     public BigDecimal arctan(BigDecimal x) {
+        if (x.abs(MathContext.DECIMAL128).doubleValue()>= 1.0) {
+            throw new IllegalArgumentException();
+        }
         BigDecimal acum = BigDecimal.ZERO;
         for (int n =0; n<50; n++) {
             int v2np1 = 2*n +1;
@@ -230,6 +245,9 @@ public class BigDecimalMatriz extends NumericMatriz<BigDecimal> {
 
     @Override
     public BigDecimal tanh(BigDecimal x) {
+        if (x.abs(MathContext.DECIMAL128).doubleValue()>= Math.PI/2.0) {
+            throw new IllegalArgumentException();
+        }
         return senh(x).divide(cosh(x), MathContext.DECIMAL128);
 //        BigDecimal acum = BigDecimal.ZERO;
 //        BigDecimal v4 = BigDecimal.valueOf(4);
@@ -248,6 +266,9 @@ public class BigDecimalMatriz extends NumericMatriz<BigDecimal> {
 
     @Override
     public BigDecimal arcsenh(BigDecimal x) {
+        if (x.abs(MathContext.DECIMAL128).doubleValue()>= 1.0) {
+            throw new IllegalArgumentException();
+        }
         BigDecimal acum = BigDecimal.ZERO;
         BigDecimal v4 = BigDecimal.valueOf(4);
         for (int n =0; n<15; n++) {
