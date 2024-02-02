@@ -219,7 +219,7 @@ public class DoubleMatriz extends NumericMatriz<Double> {
 
     @Override
     public Double arccos(Double x) {
-        return Math.asin(x);
+        return Math.acos(x);
     }
 
     @Override
