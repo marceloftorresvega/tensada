@@ -244,6 +244,9 @@ public class FloatMatriz extends NumericMatriz<Float> {
 
     @Override
     public Float arcsenh(Float x) {
+        if (x >= 1f) {
+            throw new IllegalArgumentException();
+        }
         float acum = 0 ;
         for (int n=0 ; n< 6; n++) {
             float v2np1 = 2*n +1;

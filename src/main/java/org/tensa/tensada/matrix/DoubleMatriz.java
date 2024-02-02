@@ -1,5 +1,6 @@
 package org.tensa.tensada.matrix;
 
+import java.math.MathContext;
 import org.tensa.tensada.vector.Double3DVector;
 import org.tensa.tensada.vector.impl.DoubleVector3DImpl;
 import java.util.Map;
@@ -219,7 +220,7 @@ public class DoubleMatriz extends NumericMatriz<Double> {
 
     @Override
     public Double arccos(Double x) {
-        return Math.asin(x);
+        return Math.acos(x);
     }
 
     @Override
@@ -244,6 +245,9 @@ public class DoubleMatriz extends NumericMatriz<Double> {
 
     @Override
     public Double arcsenh(Double x) {
+        if (x >= 1.0) {
+            throw new IllegalArgumentException();
+        }
         double acum = 0 ;
         for (int n=0 ; n< 6; n++) {
             double v2np1 = 2*n +1;
