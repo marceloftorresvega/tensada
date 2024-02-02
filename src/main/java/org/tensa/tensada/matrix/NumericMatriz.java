@@ -18,7 +18,7 @@ import java.util.stream.IntStream;
  */
 public abstract class NumericMatriz<N extends Number> extends Matriz<N> {
 
-    private final static long[] hardFact =   {1, 1,     2,  6,  24, 120, 720, 5040, 40320, 362880, 3628800, 1307674368000L, 2432902008176640000L};
+    private final static long[] hardFact =   {1, 1,     2,  6,  24, 120, 720, 5040, 40320, 362880, 3628800, 39916800, 479001600, 6227020800L, 87178291200L, 1307674368000L, 20922789888000L, 355687428096000L, 6402373705728000L, 121645100408832000L, 2432902008176640000L};
     private final static long[] hardEule =   {1, 0,    -1,  0,   5,   0, -61,    0,  1385, -50521,       0,        2702765,                    0, -199360981};
     private final static double[] hardBern = {1, -1/2, 1/6, 0, -1/30, 0, 1/42,   0, -1/30,      0,    5/66,              0,            -691/2730,          0};
     public NumericMatriz(Dominio dominio) {
