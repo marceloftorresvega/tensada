@@ -154,12 +154,12 @@ public class DoubleMatriz extends NumericMatriz<Double> {
     }
 
     @Override
-    public Double sumaDirecta(Double sum1, Double sum2) {
+    public Double suma(Double sum1, Double sum2) {
         return sum1 + sum2;
     }
 
     @Override
-    public Double productoDirecto(Double prod1, Double prod2) {
+    public Double multiplica(Double prod1, Double prod2) {
         return prod1 * prod2;
     }
 
@@ -194,7 +194,7 @@ public class DoubleMatriz extends NumericMatriz<Double> {
     }
 
     @Override
-    public Double sin(Double ang) {
+    public Double sen(Double ang) {
         return Math.sin(ang);
     }
 
@@ -319,7 +319,7 @@ public class DoubleMatriz extends NumericMatriz<Double> {
     }
 
     @Override
-    public Double restaDirecta(Double sum1, Double sum2) {
+    public Double resta(Double sum1, Double sum2) {
         return sum1 - sum2;
     }
 

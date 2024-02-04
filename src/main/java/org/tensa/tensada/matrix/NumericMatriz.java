@@ -45,15 +45,15 @@ public abstract class NumericMatriz<N extends Number> extends Matriz<N> {
 
     public abstract N getUnoValue();
 
-    public abstract N sumaDirecta(N sum1, N sum2);
+    public abstract N suma(N sum1, N sum2);
 
-    public abstract N restaDirecta(N sum1, N sum2);
+    public abstract N resta(N sum1, N sum2);
 
     public abstract N inversoAditivo(N sum1);
 
     public abstract N cos(N ang);
 
-    public abstract N sin(N ang);
+    public abstract N sen(N ang);
 
     public abstract N tan(N ang);
 
@@ -87,7 +87,7 @@ public abstract class NumericMatriz<N extends Number> extends Matriz<N> {
     
     public abstract N pow(N a, N x);
 
-    public abstract N productoDirecto(N prod1, N prod2);
+    public abstract N multiplica(N prod1, N prod2);
     
     public abstract N inversoMultiplicativo(N prod);
 
@@ -129,9 +129,8 @@ public abstract class NumericMatriz<N extends Number> extends Matriz<N> {
 
     public NumericMatriz<N> productoEscalar(N escala) {
         return this.entrySet().stream()
-            .collect(Collectors.toMap(
-                            e -> e.getKey(),
-                            e -> productoDirecto(e.getValue(), escala),
+            .collect(Collectors.toMap(e -> e.getKey(),
+                            e -> multiplica(e.getValue(), escala),
                             (v1,v2) -> v1,
                             () -> instancia(this.dominio)
                     ));
@@ -144,9 +143,8 @@ public abstract class NumericMatriz<N extends Number> extends Matriz<N> {
         }
 
         return this.dominio.stream()
-                .collect(Collectors.toMap(
-                        Function.identity(),
-                        index -> sumaDirecta(this.get(index), sumando.get(index)),
+                .collect(Collectors.toMap(Function.identity(),
+                        index -> suma(this.get(index), sumando.get(index)),
                         (v1,v2) -> v1,
                         () -> instancia(this.dominio)));
 
@@ -158,9 +156,8 @@ public abstract class NumericMatriz<N extends Number> extends Matriz<N> {
         }
 
         return this.dominio.stream()
-                .collect(Collectors.toMap(
-                        Function.identity(),
-                        index -> restaDirecta(this.get(index), sumando.get(index)),
+                .collect(Collectors.toMap(Function.identity(),
+                        index -> resta(this.get(index), sumando.get(index)),
                         (v1,v2) -> v1,
                         () -> instancia(this.dominio)));
     }
@@ -185,21 +182,20 @@ public abstract class NumericMatriz<N extends Number> extends Matriz<N> {
 
         Dominio resultante = new Dominio(n, p);
         return resultante.stream()
-            .collect(Collectors.toMap(
-                        Function.identity(),
+            .collect(Collectors.toMap(Function.identity(),
                         index-> IntStream.rangeClosed(1, m)
                             .mapToObj(k -> {
 
                                 Indice ik = new Indice(index.getFila(), k);
                                 Indice kj = new Indice(k, index.getColumna());
 
-                                return productoDirecto(
+                                return multiplica(
                                         punto.andThen(this::get).apply(ik),
                                         tenso.andThen(parte::get).apply(kj));
 
                             })
                             .reduce(this.getCeroValue(),
-                                    this::sumaDirecta),
+                                    this::suma),
                         (v1,v2) -> v1,
                         () -> instancia(resultante)
                     ));
@@ -296,11 +292,11 @@ public abstract class NumericMatriz<N extends Number> extends Matriz<N> {
                 .mapToObj(j -> {
                     Indice idx = new Indice(1, j);
 
-                    N valor = this.productoDirecto(this.get(idx), this.matrizIesima(idx).determinante().get(Indice.E1));
+                    N valor = this.multiplica(this.get(idx), this.matrizIesima(idx).determinante().get(Indice.E1));
 
                     return ((1 + j) % 2 == 0) ? valor : this.inversoAditivo(valor);
 
-                }).collect(Collectors.reducing(this::sumaDirecta));
+                }).collect(Collectors.reducing(this::suma));
 
         return this.instancia(new Dominio(1, 1)).indexa(1, 1, det.get());
 
@@ -413,10 +409,9 @@ public abstract class NumericMatriz<N extends Number> extends Matriz<N> {
         return instancia(new Dominio(1, 1))
                 .indexa(1, 1, dominio.stream()
                         .filter(k -> k.getFila().intValue() == k.getColumna().intValue())
-                        .reduce(
-                                this.getCeroValue(),
-                                (v, k) -> this.sumaDirecta(v, this.get(k)),
-                                (v1, v2) -> this.sumaDirecta(v1, v2)
+                        .reduce(this.getCeroValue(),
+                                (v, k) -> this.suma(v, this.get(k)),
+                                (v1, v2) -> this.suma(v1, v2)
                         )
                 );
 
@@ -425,8 +420,8 @@ public abstract class NumericMatriz<N extends Number> extends Matriz<N> {
     public NumericMatriz<N> norma() {
         NumericMatriz<N> retorno = this.instancia(new Dominio(Indice.D1));
         N norma = this.values().stream()
-                .map(a -> this.productoDirecto(a, a))
-                .reduce(this::sumaDirecta)
+                .map(a -> this.multiplica(a, a))
+                .reduce(this::suma)
                 .map(N::doubleValue)
                 .map(Math::sqrt)
                 .map(this::mapper)
@@ -448,7 +443,7 @@ public abstract class NumericMatriz<N extends Number> extends Matriz<N> {
         }
 
         N coT = cos(angulo);
-        N siT = sin(angulo);
+        N siT = sen(angulo);
 
         try (
             NumericMatriz<N> ux = eje.skewSymMatrix();
@@ -456,7 +451,7 @@ public abstract class NumericMatriz<N extends Number> extends Matriz<N> {
             NumericMatriz<N> id = ux.matrizIdentidad();
             NumericMatriz<N> idCot = id.productoEscalar(coT);
             NumericMatriz<N> uxSit = ux.productoEscalar(siT);
-            NumericMatriz<N> uut1noCot = uut.productoEscalar(restaDirecta(getUnoValue(), coT));
+            NumericMatriz<N> uut1noCot = uut.productoEscalar(resta(getUnoValue(), coT));
             NumericMatriz<N> adIdCotUxSit =idCot.adicion(uxSit);) {
 
 //    //        return ux.productoEscalar(siT)
