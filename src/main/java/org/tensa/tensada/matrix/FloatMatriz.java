@@ -148,13 +148,18 @@ public class FloatMatriz extends NumericMatriz<Float> {
     }
 
     @Override
-    public Float sumaDirecta(Float sum1, Float sum2) {
+    public Float suma(Float sum1, Float sum2) {
         return sum1 + sum2;
     }
 
     @Override
-    public Float productoDirecto(Float prod1, Float prod2) {
+    public Float multiplica(Float prod1, Float prod2) {
         return prod1 * prod2;
+    }
+
+    @Override
+    public Float divide(Float numerador, Float denominador) {
+        return numerador / denominador;
     }
 
     @Override
@@ -193,7 +198,7 @@ public class FloatMatriz extends NumericMatriz<Float> {
     }
 
     @Override
-    public Float sin(Float angulo) {
+    public Float sen(Float angulo) {
         return (float)Math.sin(angulo);
     }
 
@@ -318,7 +323,7 @@ public class FloatMatriz extends NumericMatriz<Float> {
     }
 
     @Override
-    public Float restaDirecta(Float sum1, Float sum2) {
+    public Float resta(Float sum1, Float sum2) {
         return sum1 - sum2;
     }
 

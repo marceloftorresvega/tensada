@@ -74,7 +74,7 @@ public class BigDecimalMatriz extends NumericMatriz<BigDecimal> {
     }
 
     @Override
-    public BigDecimal sumaDirecta(BigDecimal sum1, BigDecimal sum2) {
+    public BigDecimal suma(BigDecimal sum1, BigDecimal sum2) {
         return sum1.add(sum2);
     }
 
@@ -99,7 +99,7 @@ public class BigDecimalMatriz extends NumericMatriz<BigDecimal> {
     }
 
     @Override
-    public BigDecimal sin(BigDecimal ang) {
+    public BigDecimal sen(BigDecimal ang) {
         BigDecimal acum = BigDecimal.ZERO;
         for (int n =0; n<15; n++) {
             int v2np1 = 2*n+1;
@@ -118,7 +118,7 @@ public class BigDecimalMatriz extends NumericMatriz<BigDecimal> {
         if (ang.abs(MathContext.DECIMAL128).doubleValue()>= Math.PI/2.0) {
             throw new IllegalArgumentException();
         }
-        return sin(ang).divide(cos(ang), MathContext.DECIMAL128);
+        return sen(ang).divide(cos(ang), MathContext.DECIMAL128);
 //        BigDecimal acum = BigDecimal.ZERO;
 //        BigDecimal v4 = BigDecimal.valueOf(4);
 //        BigDecimal v1 = BigDecimal.ONE;
@@ -159,7 +159,7 @@ public class BigDecimalMatriz extends NumericMatriz<BigDecimal> {
         if (ang.abs(MathContext.DECIMAL128).doubleValue()>= Math.PI) {
             throw new IllegalArgumentException();
         }
-        return sin(ang).pow(-1, MathContext.DECIMAL128);
+        return sen(ang).pow(-1, MathContext.DECIMAL128);
         
 //        BigDecimal acum = BigDecimal.ZERO;
 //        BigDecimal v2 = BigDecimal.valueOf(2);
@@ -404,8 +404,13 @@ public class BigDecimalMatriz extends NumericMatriz<BigDecimal> {
     }
 
     @Override
-    public BigDecimal productoDirecto(BigDecimal prod1, BigDecimal prod2) {
+    public BigDecimal multiplica(BigDecimal prod1, BigDecimal prod2) {
         return prod1.multiply(prod2,MathContext.DECIMAL128);
+    }
+
+    @Override
+    public BigDecimal divide(BigDecimal numerador, BigDecimal denominador) {
+        return numerador.divide(denominador, MathContext.DECIMAL128);
     }
 
     @Override
@@ -424,7 +429,7 @@ public class BigDecimalMatriz extends NumericMatriz<BigDecimal> {
     }
 
     @Override
-    public BigDecimal restaDirecta(BigDecimal sum1, BigDecimal sum2) {
+    public BigDecimal resta(BigDecimal sum1, BigDecimal sum2) {
         return sum1.subtract(sum2);
     }
     
