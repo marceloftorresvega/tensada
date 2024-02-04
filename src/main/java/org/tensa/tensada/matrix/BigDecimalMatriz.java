@@ -409,6 +409,11 @@ public class BigDecimalMatriz extends NumericMatriz<BigDecimal> {
     }
 
     @Override
+    public BigDecimal divide(BigDecimal numerador, BigDecimal denominador) {
+        return numerador.divide(denominador, MathContext.DECIMAL128);
+    }
+
+    @Override
     public BigDecimal inversoMultiplicativo(BigDecimal prod) {
         return BigDecimal.ONE.divide(prod, MathContext.DECIMAL128);
     }

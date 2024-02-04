@@ -88,6 +88,8 @@ public abstract class NumericMatriz<N extends Number> extends Matriz<N> {
     public abstract N pow(N a, N x);
 
     public abstract N multiplica(N prod1, N prod2);
+
+    public abstract N divide(N numerador, N denominador);
     
     public abstract N inversoMultiplicativo(N prod);
 

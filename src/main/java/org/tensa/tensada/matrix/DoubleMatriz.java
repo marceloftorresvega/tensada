@@ -164,6 +164,11 @@ public class DoubleMatriz extends NumericMatriz<Double> {
     }
 
     @Override
+    public Double divide(Double numerador, Double denominador) {
+        return numerador / denominador;
+    }
+
+    @Override
     public DoubleMatriz instancia(Dominio dominio) {
         return new DoubleMatriz(dominio);
     }

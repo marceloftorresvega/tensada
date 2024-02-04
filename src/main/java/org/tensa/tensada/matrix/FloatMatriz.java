@@ -158,6 +158,11 @@ public class FloatMatriz extends NumericMatriz<Float> {
     }
 
     @Override
+    public Float divide(Float numerador, Float denominador) {
+        return numerador / denominador;
+    }
+
+    @Override
     public FloatMatriz instancia(Dominio dominio) {
         return new FloatMatriz(dominio);
     }
